@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lightPrimary">#7b98b4b3</color>
+    <color name="Header">#434343</color>
+    <color name="colorPrimary">#84648644</color>
+    <color name="slofedGreen">#d2465e30</color>
+    <color name="colorPrimaryStrong">#738760</color>
+    <color name="colorPrimaryDark">#303f9f</color>
+    <color name="colorAccent">#e3f582a9</color>
+    <color name="colorAccentDark">#3e609e</color>
+    <color name="grey">#919191</color>
+    <color name="color_yes">#bb60a755</color>
+    <color name="color_no">#eea75559</color>
+    <color name="color_maybe">#c9d19050</color>
+    <color name="lightBackground">#d7b3bab1</color>
+    <color name="for_top">#00008c</color>
+    <color name="invisible">#00ffffff</color>
+    <color name="blueLight">#7b2ffff8</color>
+    <color name="navigation_button_color">#3e8000</color>
+
+
+    <color name="black_overlay">#66000000</color>
+</resources>

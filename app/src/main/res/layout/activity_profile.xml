@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".Profile">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
+
+            <ImageView
+                android:id="@+id/profile_imageView"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/NameTextV"
+                app:layout_constraintEnd_toEndOf="@+id/scrollViewProfile"
+                app:layout_constraintHorizontal_bias="0.038"
+                app:layout_constraintStart_toStartOf="@+id/scrollViewProfile"
+                app:layout_constraintTop_toTopOf="@+id/NameTextV"
+                app:srcCompat="@mipmap/no_profile_pic_round" />
+
+            <TextView
+                android:id="@+id/NameTextV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:inputType="textPersonName"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/scrollViewProfile"
+                app:layout_constraintStart_toStartOf="@+id/scrollViewProfile"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.26" />
+
+            <EditText
+
+                android:id="@+id/editNameV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:hint="@string/full_name_default"
+                android:inputType="textEmailAddress"
+                android:textSize="30sp"
+                android:visibility="invisible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/NameTextV"
+                app:layout_constraintEnd_toEndOf="@+id/NameTextV"
+                app:layout_constraintStart_toStartOf="@+id/NameTextV" />
+
+
+            <Button
+                android:id="@+id/medicalIDBtn"
+
+                android:layout_width="120dp"
+                android:layout_height="25dp"
+
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/medical_id_btn_bg"
+                android:onClick="goToMedicalAtempt"
+                android:shadowColor="#A8A8A8"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="5"
+                android:text="Medical ID"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/NameTextV"
+                app:layout_constraintEnd_toEndOf="@+id/addParentBtn" />
+
+            <Button
+                android:id="@+id/addChildBtn"
+
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@color/slofedGreen"
+                android:text="Add Child"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/button_text_size"
+                app:layout_constraintBaseline_toBaselineOf="@+id/addParentBtn"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/addParentBtn"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="45dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryStrong"
+                android:foregroundGravity="bottom"
+                android:onClick="addParent"
+                android:text="Add Parent"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/button_text_size"
+                app:layout_constraintBottom_toTopOf="@+id/medicalIDBtn"
+                app:layout_constraintEnd_toEndOf="@+id/scrollViewProfile"
+                app:layout_constraintStart_toEndOf="@+id/addChildBtn"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ScrollView
+                android:id="@+id/scrollViewProfile"
+                android:layout_width="369dp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/NameTextV">
+
+                <TableLayout
+                    android:id="@+id/tableLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/medicalIDBtn"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/NameTextV">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:onClick="call">
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/PhoneHeaderTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginTop="8dp"
+                                android:src="@drawable/ic_phone_black_24dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/PhoneTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:inputType="phone"
+                                android:maxWidth="@dimen/profileTextDataMaxWidth"
+                                android:textSize="@dimen/profile_text_size"
+                                android:visibility="visible"
+                                app:layout_constraintStart_toEndOf="@+id/PhoneHeaderTextV"
+                                tools:layout_editor_absoluteY="11dp" />
+
+                            <EditText
+                                android:id="@+id/editPhoneV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:hint="@string/phone_default"
+                                android:inputType="phone"
+                                android:maxWidth="@dimen/profileEditDataMaxWidth"
+                                android:text=""
+                                android:textSize="@dimen/profile_text_size"
+                                android:visibility="invisible"
+                                app:layout_constraintStart_toStartOf="@+id/PhoneTextV"
+                                tools:layout_editor_absoluteY="0dp" />
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/phoneSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="sendEmail">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/EmailHeaderTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/ic_email_orenge_24dp" />
+
+                            <TextView
+                                android:id="@+id/EmailTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:inputType="textEmailAddress"
+                                android:maxWidth="@dimen/profileTextDataMaxWidth"
+                                android:textSize="@dimen/profile_text_size" />
+
+                            <EditText
+                                android:id="@+id/editEmailV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:hint="@string/email_default"
+                                android:inputType="textEmailAddress"
+                                android:maxWidth="@dimen/profileEditDataMaxWidth"
+                                android:text=""
+                                android:textSize="@dimen/profile_text_size"
+                                android:visibility="invisible" />
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/emailSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+
+                    </TableRow>
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/BdayHeaderTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/ic_happy_face_24dp" />
+
+                            <TextView
+                                android:id="@+id/BdayTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:inputType="date"
+                                android:maxWidth="@dimen/profileTextDataMaxWidth"
+                                android:textSize="@dimen/profile_text_size" />
+
+                            <EditText
+                                android:id="@+id/editBdayV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:hint="@string/bday_default"
+                                android:inputType="date"
+                                android:maxWidth="@dimen/profileEditDataMaxWidth"
+                                android:text=""
+                                android:textSize="@dimen/profile_text_size"
+                                android:visibility="invisible" />
+
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/bdaySpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="navigate">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+
+                                android:id="@+id/cityHeaderTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/ic_location_city_grey_24dp" />
+
+                            <TextView
+                                android:id="@+id/cityTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:inputType="textPostalAddress"
+                                android:maxWidth="@dimen/profileTextDataMaxWidth"
+                                android:textSize="@dimen/profile_text_size" />
+
+                            <EditText
+                                android:id="@+id/editCityV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:hint="@string/city_default"
+                                android:inputType="textPostalAddress"
+                                android:maxWidth="@dimen/profileEditDataMaxWidth"
+                                android:text=""
+                                android:textSize="@dimen/profile_text_size"
+                                android:visibility="invisible" />
+
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/citySpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="navigate">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+
+                            <ImageView
+                                android:id="@+id/AdressHeaderTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/ic_place_turkiz_24dp" />
+
+                            <TextView
+                                android:id="@+id/AdressTextV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:inputType="textPostalAddress"
+                                android:maxWidth="@dimen/profileTextDataMaxWidth"
+                                android:textSize="@dimen/profile_text_size" />
+
+                            <EditText
+                                android:id="@+id/editAdressV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:hint="@string/adress_default"
+                                android:inputType="textPostalAddress"
+                                android:maxWidth="@dimen/profileEditDataMaxWidth"
+                                android:text=""
+                                android:textSize="@dimen/profile_text_size"
+                                android:visibility="invisible" />
+
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/addressSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </TableRow>
+                </TableLayout>
+            </ScrollView>
+
+            <ImageView
+                android:id="@+id/editImageV_Button_"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:onClick="onOffEditMode"
+                app:layout_constraintBottom_toBottomOf="@+id/NameTextV"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.8"
+                app:layout_constraintStart_toEndOf="@+id/editNameV"
+                app:layout_constraintTop_toTopOf="@+id/NameTextV"
+                app:srcCompat="@drawable/ic_mode_edit_off_24dp" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/moveOnButton"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/invisible"
+        android:onClick="goToMedicalAtempt"
+        android:src="@drawable/ic_check_circle_black_24dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/backHomeBtn"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/invisible"
+        android:onClick="goToHomeAtempt"
+        android:src="@drawable/ic_check_circle_black_24dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

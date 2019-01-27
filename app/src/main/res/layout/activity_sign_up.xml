@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
+    tools:context=".signUp">
+
+    <TextView
+        android:id="@+id/headerTextV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/sign_up_header"
+        android:textAllCaps="true"
+        android:textColor="@color/Header"
+        android:layout_marginBottom="50dp"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/emailEditT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:hint="@string/email_hint"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/grey" />
+
+    <EditText
+        android:id="@+id/passEditT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/password_hint"
+        android:layout_margin="10dp"
+        android:textColorHint="@color/grey"
+        android:inputType="numberPassword" />
+
+    <EditText
+        android:id="@+id/reEnterPassEditT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/re_enter_password_hint"
+        android:layout_margin="10dp"
+        android:textColorHint="@color/grey"
+        android:inputType="numberPassword" />
+
+    <Button
+        android:id="@+id/signUpBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:background="@color/lightPrimary"
+        android:onClick="signUpAtempt"
+        android:text = "@string/sign_up_header" />
+
+
+
+    <TextView
+        android:id="@+id/commentTextV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_horizontal"
+        android:paddingLeft="20dp"
+        android:text="-EROR_MESSAGE_HERE-"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="invisible" />
+
+</LinearLayout>

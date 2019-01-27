@@ -1,0 +1,18 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height_for_home_activity">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="button_text_size">16dp</dimen>
+    <dimen name="margin_event_props">15dp</dimen>
+    <dimen name="size_text_event_props">20sp</dimen>
+    <dimen name="profile_text_size">18sp</dimen>
+    <dimen name="profileEditDataMaxWidth">200dp</dimen>
+    <dimen name="max_height_for_scroll_event">50dp</dimen>
+    <dimen name="profileTextDataMaxWidth">250dp</dimen>
+    <dimen name="treePicDimens">55dp</dimen>
+</resources>

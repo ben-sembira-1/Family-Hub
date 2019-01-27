@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "1025579921266",
+    "firebase_url": "https://family-orgenizer.firebaseio.com",
+    "project_id": "family-orgenizer",
+    "storage_bucket": "family-orgenizer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025579921266:android:745428a2fedd64c8",
+        "android_client_info": {
+          "package_name": "com.example.sembi.logingui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1025579921266-ia3n76v5gddqdpnqiqcvfojurm4j25br.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sembi.logingui",
+            "certificate_hash": "02a96ff7c439091b6c0ba78e9160b1d02894843c"
+          }
+        },
+        {
+          "client_id": "1025579921266-hmksguvp203m722b3qj6i55hobqsm4ga.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1025579921266-hmksguvp203m722b3qj6i55hobqsm4ga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjWAHw5M2t8PDdaMw8ByCsyhPsnPI-bQA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1025579921266-hmksguvp203m722b3qj6i55hobqsm4ga.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

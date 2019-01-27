@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Event">
+
+
+    <TextView
+        android:id="@+id/EventNameTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/event_header"
+        android:textColor="@color/colorAccentDark"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/editImageV_Button_"
+        android:layout_width="27dp"
+        android:layout_height="26dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onOffEditMode"
+        app:layout_constraintBottom_toBottomOf="@+id/EventNameTextV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/EventNameTextV"
+        app:srcCompat="@drawable/ic_mode_edit_off_24dp" />
+
+
+    <ImageView
+        android:id="@+id/pic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/EventNameTextV"
+        app:layout_constraintEnd_toStartOf="@+id/EventNameTextV"
+        app:layout_constraintTop_toTopOf="@+id/EventNameTextV"
+        app:srcCompat="@drawable/ic_event" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/EventNameTextV"
+        app:layout_constraintStart_toEndOf="@+id/EventNameTextV"
+        app:layout_constraintTop_toTopOf="@+id/EventNameTextV"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_event" />
+
+    <TextView
+        android:id="@+id/comingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/event_coming_text"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventDiscriptionScrollView"
+        app:layout_constraintVertical_bias="0.05" />
+
+    <Button
+        android:id="@+id/yesComingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_yes"
+        android:onClick="yesClicked"
+        android:text="@string/event_btn_yes"
+        android:textColor="#003805"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comingTextView" />
+
+    <Button
+        android:id="@+id/notComingButton"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/bg_no"
+        android:onClick="noClicked"
+        android:text="@string/event_btn_no"
+        android:textColor="#450505"
+        app:layout_constraintBaseline_toBaselineOf="@+id/yesComingButton"
+        app:layout_constraintStart_toEndOf="@+id/yesComingButton" />
+
+    <Button
+        android:id="@+id/maybeComingButton"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_maybe"
+        android:onClick="maybeClicked"
+        android:text="@string/event_btn_maybe"
+        android:textColor="#533005"
+        app:layout_constraintBaseline_toBaselineOf="@+id/yesComingButton"
+        app:layout_constraintEnd_toStartOf="@+id/yesComingButton" />
+
+    <TextView
+        android:id="@+id/hostHeaderTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_event_props"
+        android:layout_marginTop="8dp"
+        android:text="@string/event_host"
+        android:textColor="@color/ic_launcher_background"
+        android:textSize="@dimen/size_text_event_props"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EventNameTextV" />
+
+    <TextView
+        android:id="@+id/hostDataTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_event_props"
+        android:onClick="goToHost"
+        android:text="Yossi Sembira"
+        android:textSize="@dimen/size_text_event_props"
+        app:layout_constraintBaseline_toBaselineOf="@+id/hostHeaderTextV"
+        app:layout_constraintStart_toEndOf="@+id/hostHeaderTextV" />
+
+    <TextView
+        android:id="@+id/dateHeaderTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_event_props"
+        android:text="@string/event_date_header"
+        android:textColor="@color/ic_launcher_background"
+        android:textSize="@dimen/size_text_event_props"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hostHeaderTextV" />
+
+    <TextView
+        android:id="@+id/dateDataTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_event_props"
+        android:text="shuglibaba"
+        android:textSize="@dimen/size_text_event_props"
+        app:layout_constraintBaseline_toBaselineOf="@+id/dateHeaderTextV"
+        app:layout_constraintStart_toEndOf="@+id/dateHeaderTextV" />
+
+
+    <TextView
+        android:id="@+id/locationHeaderTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_event_props"
+        android:text="@string/event_location"
+        android:textColor="@color/ic_launcher_background"
+        android:textSize="@dimen/size_text_event_props"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateHeaderTextV" />
+
+    <TextView
+        android:id="@+id/locationDataHeaderTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_event_props"
+        android:text="somewere"
+        android:textSize="@dimen/size_text_event_props"
+        app:layout_constraintBaseline_toBaselineOf="@+id/locationHeaderTextV"
+        app:layout_constraintStart_toEndOf="@+id/locationHeaderTextV" />
+
+    <TextView
+        android:id="@+id/descriptionTextV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/event_description_header"
+        android:textAlignment="textStart"
+        android:textColor="@color/black_overlay"
+        android:textSize="@dimen/size_text_event_props"
+        android:textStyle="normal"
+        android:typeface="monospace"
+        app:layout_constraintStart_toStartOf="@+id/locationHeaderTextV"
+        app:layout_constraintTop_toBottomOf="@+id/locationDataHeaderTextV" />
+
+    <ImageView
+        android:id="@+id/comingStateImageV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="chooseAgain"
+        app:layout_constraintBottom_toTopOf="@+id/notComingButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventDiscriptionScrollView"
+        app:srcCompat="@drawable/thinking_50" />
+
+    <ScrollView
+        android:id="@+id/eventDiscriptionScrollView"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/discription_bg"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/locationHeaderTextV"
+        app:layout_constraintTop_toTopOf="@+id/locationDataHeaderTextV"
+        app:layout_constraintVertical_bias="0.32">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/eventDiscriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:hint="place your discription here."
+                android:inputType="textMultiLine|textAutoComplete"
+                android:maxLines="5"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                tools:layout_editor_absoluteX="171dp"
+                tools:layout_editor_absoluteY="158dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.bartoszlipinski.constraint.StaggeredAnimationGroup
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="pic, imageView2, EventNameTextV, hostHeaderTextV, dateDataTextV" />
+
+</android.support.constraint.ConstraintLayout>
