@@ -1,10 +1,5 @@
 package com.example.sembi.logingui;
 
-import android.support.annotation.NonNull;
-
-import java.util.Date;
-import java.util.Iterator;
-
 public class ProfileModel {
 
 
