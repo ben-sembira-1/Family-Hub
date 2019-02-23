@@ -16,6 +16,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewStub;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import static java.lang.System.arraycopy;
 
 public class homeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -90,7 +94,9 @@ public class homeScreen extends AppCompatActivity
 
     private void setName() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("personalData").child("name");
+        DatabaseReference myRef = database.getReference("users")
+                .child(FirebaseAuth.getInstance().getCurrentUser()
+                        .getUid()).child("personalData").child("name");
 
         // Read from the database
         myRef.addValueEventListener(new ValueEventListener() {
@@ -188,4 +194,138 @@ public class homeScreen extends AppCompatActivity
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
     }
+
+
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+
+//    public class Event {
+//
+//        private Button[] choiseButtons;
+//        private ImageView stateImageView;
+//
+//
+//
+//        private String host; //TODO
+//
+//        public Boolean getCHOSEN() {
+//            return CHOSEN;
+//        }
+//
+//        private Boolean CHOSEN = false;
+//
+//
+//
+//        private int STATE = 0;
+//        //-1 - no, 0 - thinking, 1 - yes
+//
+//        protected void onCreateEvent(Bundle savedInstanceState) {
+//            super.onCreate(savedInstanceState);
+//            setContentView(R.layout.activity_event);
+//
+//            choiseButtons = new Button[3];
+//            setButtons();
+//
+//
+//            stateImageView = findViewById(R.id.comingStateImageV);
+//
+//            refresh();
+//        }
+//
+//        public int getSTATE() {
+//            return STATE;
+//        }
+//
+//        public void setSTATE(int STATE) {
+//            this.STATE = STATE;
+//        }
+//
+//        public String getHost() {
+//            return host;
+//        }
+//
+//        public void setHost(String host) {
+//            this.host = host;
+//        }
+//
+//        private void setButtons() {
+//            Button[] Buttons = {findViewById(R.id.yesComingButton), findViewById(R.id.notComingButton), findViewById(R.id.maybeComingButton)};
+//
+//
+//            arraycopy(Buttons, 0, choiseButtons, 0, Buttons.length);
+//        }
+//
+//        public void onOffEditMode(View view){
+//            //TODO
+//        }
+//
+//
+//        public void yesClicked(View view) {
+//            chosen(1);
+//        }
+//
+//        public void noClicked(View view) {
+//            chosen(-1);
+//        }
+//
+//        public void maybeClicked(View view) {
+//            chosen(0);
+//        }
+//
+//        public void chooseAgain(View view) {
+//            CHOSEN = false;
+//            refresh();
+//        }
+//
+//        private void chosen(int choise){
+//            CHOSEN = true;
+//            STATE = choise;
+//            refresh();
+//        }
+//
+//        public void refresh(){
+//            setStateImageViewSrc();
+//            setInvisibility();
+//        }
+//
+//        private void setInvisibility() {
+//            if (CHOSEN){
+//                for (Button B: choiseButtons)
+//                    B.setVisibility(View.INVISIBLE);
+//                stateImageView.setVisibility(View.VISIBLE);
+//            }else{
+//                for (Button B: choiseButtons)
+//                    B.setVisibility(View.VISIBLE);
+//                stateImageView.setVisibility(View.INVISIBLE);
+//            }
+//        }
+//
+//        public void setStateImageViewSrc(){
+//            int drawableId = R.drawable.thumbs_up_64;
+//            if(STATE == 0)
+//                drawableId = R.drawable.thinking_50;
+//            else if (STATE == -1)
+//                drawableId = R.drawable.thumbs_down_64;
+//
+//
+//            stateImageView.setImageDrawable(getDrawable(drawableId));
+//        }
+//
+//
+//        public void goToHost(View view) {
+//            Profile.setCurrentUser(host);
+//            Intent intent = new Intent(this, Profile.class);
+//            startActivity(intent);
+//        }
+//    }
+
+
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
+    //EVENT--EVENT--EVENT--EVENT--EVENT--EVENT-EVENT--EVENT
 }

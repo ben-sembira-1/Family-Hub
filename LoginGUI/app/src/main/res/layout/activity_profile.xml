@@ -8,11 +8,35 @@
     tools:context=".Profile">
 
 
-    <ScrollView
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/profile_activity_top_background">
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <ScrollView
+        android:id="@+id/bottomContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -64,26 +88,26 @@
                 app:layout_constraintStart_toStartOf="@+id/NameTextV" />
 
 
-            <Button
-                android:id="@+id/medicalIDBtn"
+            <!--<Button-->
+            <!--android:id="@+id/medicalIDBtn"-->
 
-                android:layout_width="120dp"
-                android:layout_height="25dp"
+            <!--android:layout_width="120dp"-->
+            <!--android:layout_height="25dp"-->
 
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/medical_id_btn_bg"
-                android:onClick="goToMedicalAtempt"
-                android:shadowColor="#A8A8A8"
-                android:shadowDx="5"
-                android:shadowDy="5"
-                android:shadowRadius="5"
-                android:text="Medical ID"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/NameTextV"
-                app:layout_constraintEnd_toEndOf="@+id/addParentBtn" />
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:background="@drawable/medical_id_btn_bg"-->
+            <!--android:onClick="goToMedicalAtempt"-->
+            <!--android:shadowColor="#A8A8A8"-->
+            <!--android:shadowDx="5"-->
+            <!--android:shadowDy="5"-->
+            <!--android:shadowRadius="5"-->
+            <!--android:text="Medical ID"-->
+            <!--android:textColor="#FFFFFF"-->
+            <!--android:textSize="12sp"-->
+            <!--android:visibility="invisible"-->
+            <!--app:layout_constraintBottom_toTopOf="@+id/NameTextV"-->
+            <!--app:layout_constraintEnd_toEndOf="@+id/addParentBtn" />-->
 
             <Button
                 android:id="@+id/addChildBtn"
@@ -111,17 +135,17 @@
                 android:text="Add Parent"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/button_text_size"
-                app:layout_constraintBottom_toTopOf="@+id/medicalIDBtn"
+                app:layout_constraintBottom_toTopOf="@+id/profile_imageView"
                 app:layout_constraintEnd_toEndOf="@+id/scrollViewProfile"
                 app:layout_constraintStart_toEndOf="@+id/addChildBtn"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ScrollView
                 android:id="@+id/scrollViewProfile"
-                android:layout_width="369dp"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"
+                android:layout_marginStart="@dimen/activity_vertical_margin"
                 android:layout_marginTop="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -134,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintBottom_toTopOf="@+id/medicalIDBtn"
+                    app:layout_constraintBottom_toTopOf="@+id/profile_imageView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/NameTextV">
@@ -431,5 +455,6 @@
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

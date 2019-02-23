@@ -37,26 +37,39 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.LinkedList;
 
+import static java.lang.System.arraycopy;
+
 public class Profile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    //Set TV & ET array length to thr NUMBER_OF_PARAMETERS
     final static int NUMBER_OF_PARAMETERS = 6;
-    static Boolean EDIT_MODE = false;
-    private static boolean firstTime = true;
-    private static boolean secondTime = true;
-    private static String currentUser;
-    TextView phone;
     //0-Name,1-Phone,2-Email,3-Bday,4-City,5-Adress
     TextView[] TextDataArray;
     EditText[] EditTextDataArray;
+
+    //Flag - enable/disable editing
+    static Boolean EDIT_MODE = false;
+
+    //Flag - if true, will set EDIT_MODE to true
+    private static boolean firstTime = true;
+
+    //Flag - if true, will set EDIT_MODE to false
+    private static boolean secondTime = true;
+
+    //Set what user to show
+    private static String currentUser;
+
     String[] publicData;
-    Button[] BottomButtonsArray;
+    Button[] RequestButtonsArray;
 
 
     //date dialog
 //    private static final String TAG = "MainActivity";
 //    private DatePickerDialog.OnDateSetListener mDateSetListener;
-    Button medicIDBtn;
-    ImageView goToMedicBtn;
+
+    //probably canceling the medical button ---->
+    //Button medicIDBtn;
+    //ImageView goToMedicBtn;
     ImageView goToHomeBtn;
     ScrollView dataSV;
     ImageView editIcon;
@@ -66,6 +79,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     LinkedList<DataSnapshot> allPermissions;
     Spinner phoneSpinner, emailSpinner, bdaySpinner, citySpinner, addressSpinner;
     private ProfileModel profileData;
+    //for adding media
     private StorageReference mStorageRef;
     private Class nextClass;
 
@@ -105,23 +119,23 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
         editIcon = findViewById(R.id.editImageV_Button_);
 
-        phone = findViewById(R.id.PhoneTextV);
-
         dataSV = findViewById(R.id.scrollViewProfile);
 
 
         //TODO:
         //firstTime = isFirstTime();
 
-        medicIDBtn = findViewById(R.id.medicalIDBtn);
-        goToMedicBtn = findViewById(R.id.moveOnButton);
+        //probably canceling the medical button ---->
+        //medicIDBtn = findViewById(R.id.medicalIDBtn);
+        //probably canceling the medical button ---->
+        //goToMedicBtn = findViewById(R.id.moveOnButton);
         goToHomeBtn = findViewById(R.id.backHomeBtn);
 
         TextDataArray = new TextView[NUMBER_OF_PARAMETERS];
         EditTextDataArray = new EditText[NUMBER_OF_PARAMETERS];
-        BottomButtonsArray = new Button[2];
+        RequestButtonsArray = new Button[2];
         //initialize =>
-        setBottomButtonsArray();
+        setRequestButtonsArray();
         setTextDataArrray();
         setEditTextDataArrray();
 
@@ -176,7 +190,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("is " + name + " your " + connection + "? (" + email + ")");
 
-// Set up the buttons
+            // Set up the buttons
             builder.setNeutralButton("Show Profile", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -505,9 +519,9 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void savePrivacyInDatabase() {
-        final String[] selctionsOptions = getResources().getStringArray(R.array.privacyOptions);
+        final String[] selectionsOptions = getResources().getStringArray(R.array.privacyOptions);
 
-        setPrivacy(0, selctionsOptions[2]);
+        setPrivacy(0, selectionsOptions[2]);
         setPrivacy(1, phoneSpinner.getSelectedItem().toString());
         setPrivacy(2, emailSpinner.getSelectedItem().toString());
         setPrivacy(3, bdaySpinner.getSelectedItem().toString());
@@ -556,21 +570,25 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         //TODO
         if (profileData.getName().equals("")) {
             EDIT_MODE = true;
-            for (Button B : BottomButtonsArray) {
+            for (Button B : RequestButtonsArray) {
                 B.setVisibility(View.INVISIBLE);
             }
-            medicIDBtn.setVisibility(View.INVISIBLE);
-            goToMedicBtn.setVisibility(View.VISIBLE);
+            //probably canceling the medical button ---->
+            //medicIDBtn.setVisibility(View.INVISIBLE);
+            //probably canceling the medical button ---->
+            //goToMedicBtn.setVisibility(View.VISIBLE);
 
             setPrivacyFirstTime();
             firstTime = false;
             secondTime = true;
         } else {
-            for (Button B : BottomButtonsArray) {
+            for (Button B : RequestButtonsArray) {
                 B.setVisibility(View.VISIBLE);
             }
-            medicIDBtn.setVisibility(View.VISIBLE);
-            goToMedicBtn.setVisibility(View.INVISIBLE);
+            //probably canceling the medical button ---->
+            //medicIDBtn.setVisibility(View.VISIBLE);
+            //probably canceling the medical button ---->
+            //goToMedicBtn.setVisibility(View.INVISIBLE);
             goToHomeBtn.setVisibility(View.VISIBLE);
             firstTime = false;
             secondTime = false;
@@ -612,7 +630,8 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         }
 
         goToHomeBtn.setVisibility(textVisibality);
-        goToMedicBtn.setVisibility(textVisibality);
+        //probably canceling the medical button ---->
+        //goToMedicBtn.setVisibility(textVisibality);
 
         phoneSpinner.setVisibility(editTextVisibality);
         emailSpinner.setVisibility(editTextVisibality);
@@ -701,13 +720,13 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         }
     }
 
-    private void setBottomButtonsArray() {
+    private void setRequestButtonsArray() {
         Button[] B_id_s = {
                 findViewById(R.id.addChildBtn),
                 findViewById(R.id.addParentBtn)};
 
         for (int i = 0; i < B_id_s.length; i++) {
-            BottomButtonsArray[i] = B_id_s[i];
+            RequestButtonsArray[i] = B_id_s[i];
         }
     }
 
@@ -840,7 +859,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     public void call(View view) {
         if (EDIT_MODE)
             return;
-        String phoneNumber = phone.getText().toString();
+        String phoneNumber = TextDataArray[1].getText().toString();
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         final int REQUEST_PHONE_CALL = 1;
         callIntent.setData(Uri.parse("tel:" + phoneNumber));//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -891,33 +910,18 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Fill in your fathers Email:");
 
-// Set up the input
+        // Set up the input
         final EditText input = new EditText(this);
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        // Specifies the type of input expected; this, sets the input as a text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-// Set up the buttons
+        // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (!allUsers.contains(input.getText().toString())) {
-                    Toast.makeText(Profile.this,
-                            "user doesn't exists",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
-                        .child(getString(R.string.public_usersDB))
-                        .child(preperStringToDataBase(input.getText().toString()))
-                        .child("fam")
-                        .child("requests").push();
-                ref.child("email")
-                        .setValue(mAuth.getCurrentUser().getEmail());
-                ref.child("connection")
-                        .setValue("kid");
-                ref.child("name")
-                        .setValue(profileData.getName());
+                //Data-Base play
+                sendFatherRequestToKid(input.getText().toString());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -928,6 +932,26 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         });
 
         builder.show();
+    }
+
+    public void sendFatherRequestToKid(String mail) {
+        if (!allUsers.contains(mail)) {
+            Toast.makeText(Profile.this,
+                    "user doesn't exists",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.public_usersDB))
+                .child(preperStringToDataBase(mail))
+                .child("fam")
+                .child("requests").push();
+        ref.child("email")
+                .setValue(mAuth.getCurrentUser().getEmail());
+        ref.child("connection")
+                .setValue("kid");
+        ref.child("name")
+                .setValue(profileData.getName());
     }
 
     public void addKid(View view) {
@@ -981,7 +1005,6 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
     }
 
-
 //    public void changeImage(View view) {
 //        Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
 //        StorageReference riversRef = mStorageRef.child("images/rivers.jpg");
@@ -1002,5 +1025,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 //                    }
 //                });
 //    }
+
+
 }
 
