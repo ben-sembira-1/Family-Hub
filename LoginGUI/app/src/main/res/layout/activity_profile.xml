@@ -47,36 +47,33 @@
                 android:id="@+id/profile_imageView"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/NameTextV"
-                app:layout_constraintEnd_toEndOf="@+id/scrollViewProfile"
-                app:layout_constraintHorizontal_bias="0.038"
                 app:layout_constraintStart_toStartOf="@+id/scrollViewProfile"
                 app:layout_constraintTop_toTopOf="@+id/NameTextV"
                 app:srcCompat="@mipmap/no_profile_pic_round" />
 
             <TextView
                 android:id="@+id/NameTextV"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="8dp"
                 android:inputType="textPersonName"
                 android:textSize="30sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/scrollViewProfile"
-                app:layout_constraintStart_toStartOf="@+id/scrollViewProfile"
+                app:layout_constraintEnd_toStartOf="@+id/editImageV_Button_"
+                app:layout_constraintStart_toEndOf="@+id/profile_imageView"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.26" />
 
             <EditText
 
                 android:id="@+id/editNameV"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:hint="@string/full_name_default"
@@ -165,14 +162,12 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clickable="true"
-                        android:onClick="call">
+                        android:layout_height="match_parent">
 
                         <LinearLayout
-                            android:id="@+id/linearLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="@integer/profile_table_ratio"
                             android:gravity="center_vertical">
 
                             <ImageView
@@ -180,11 +175,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
-                                android:layout_marginBottom="8dp"
                                 android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
                                 android:src="@drawable/ic_phone_black_24dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:onClick="call" />
 
                             <TextView
                                 android:id="@+id/PhoneTextV"
@@ -196,7 +192,8 @@
                                 android:textSize="@dimen/profile_text_size"
                                 android:visibility="visible"
                                 app:layout_constraintStart_toEndOf="@+id/PhoneHeaderTextV"
-                                tools:layout_editor_absoluteY="11dp" />
+                                tools:layout_editor_absoluteY="11dp"
+                                android:onClick="call" />
 
                             <EditText
                                 android:id="@+id/editPhoneV"
@@ -216,17 +213,18 @@
                         <Spinner
                             android:id="@+id/phoneSpinner"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:onClick="sendEmail">
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="@integer/profile_table_ratio"
                             android:gravity="center_vertical">
 
                             <ImageView
@@ -234,7 +232,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
-                                android:src="@drawable/ic_email_orenge_24dp" />
+                                android:src="@drawable/ic_email_orenge_24dp"
+                                android:onClick="sendEmail" />
 
                             <TextView
                                 android:id="@+id/EmailTextV"
@@ -243,7 +242,8 @@
                                 android:layout_margin="5dp"
                                 android:inputType="textEmailAddress"
                                 android:maxWidth="@dimen/profileTextDataMaxWidth"
-                                android:textSize="@dimen/profile_text_size" />
+                                android:textSize="@dimen/profile_text_size"
+                                android:onClick="sendEmail" />
 
                             <EditText
                                 android:id="@+id/editEmailV"
@@ -261,8 +261,8 @@
                         <Spinner
                             android:id="@+id/emailSpinner"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
                     </TableRow>
 
@@ -274,6 +274,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="@integer/profile_table_ratio"
                             android:gravity="center_vertical">
 
                             <ImageView
@@ -309,18 +310,19 @@
                         <Spinner
                             android:id="@+id/bdaySpinner"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:onClick="navigate">
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="@integer/profile_table_ratio"
                             android:gravity="center_vertical">
 
                             <ImageView
@@ -329,7 +331,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
-                                android:src="@drawable/ic_location_city_grey_24dp" />
+                                android:src="@drawable/ic_location_city_grey_24dp"
+                                android:onClick="navigate" />
 
                             <TextView
                                 android:id="@+id/cityTextV"
@@ -338,7 +341,8 @@
                                 android:layout_margin="5dp"
                                 android:inputType="textPostalAddress"
                                 android:maxWidth="@dimen/profileTextDataMaxWidth"
-                                android:textSize="@dimen/profile_text_size" />
+                                android:textSize="@dimen/profile_text_size"
+                                android:onClick="navigate" />
 
                             <EditText
                                 android:id="@+id/editCityV"
@@ -357,18 +361,19 @@
                         <Spinner
                             android:id="@+id/citySpinner"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:onClick="navigate">
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_weight="@integer/profile_table_ratio"
                             android:gravity="center_vertical">
 
 
@@ -377,7 +382,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
-                                android:src="@drawable/ic_place_turkiz_24dp" />
+                                android:src="@drawable/ic_place_turkiz_24dp"
+                                android:onClick="navigate" />
 
                             <TextView
                                 android:id="@+id/AdressTextV"
@@ -386,7 +392,8 @@
                                 android:layout_margin="5dp"
                                 android:inputType="textPostalAddress"
                                 android:maxWidth="@dimen/profileTextDataMaxWidth"
-                                android:textSize="@dimen/profile_text_size" />
+                                android:textSize="@dimen/profile_text_size"
+                                android:onClick="navigate" />
 
                             <EditText
                                 android:id="@+id/editAdressV"
@@ -405,7 +412,8 @@
                         <Spinner
                             android:id="@+id/addressSpinner"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
                     </TableRow>
                 </TableLayout>
@@ -415,14 +423,12 @@
                 android:id="@+id/editImageV_Button_"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:onClick="onOffEditMode"
                 app:layout_constraintBottom_toBottomOf="@+id/NameTextV"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.8"
-                app:layout_constraintStart_toEndOf="@+id/editNameV"
+                app:layout_constraintEnd_toEndOf="@+id/scrollViewProfile"
                 app:layout_constraintTop_toTopOf="@+id/NameTextV"
                 app:srcCompat="@drawable/ic_mode_edit_off_24dp" />
 

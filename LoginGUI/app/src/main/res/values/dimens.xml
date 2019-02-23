@@ -15,4 +15,6 @@
     <dimen name="max_height_for_scroll_event">50dp</dimen>
     <dimen name="profileTextDataMaxWidth">250dp</dimen>
     <dimen name="treePicDimens">55dp</dimen>
+
+    <integer name="profile_table_ratio">10</integer>
 </resources>
