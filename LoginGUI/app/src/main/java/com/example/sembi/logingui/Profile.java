@@ -9,9 +9,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -21,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +33,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.LinkedList;
 
-import static java.lang.System.arraycopy;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class Profile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -71,7 +69,6 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     //Button medicIDBtn;
     //ImageView goToMedicBtn;
     ImageView goToHomeBtn;
-    ScrollView dataSV;
     ImageView editIcon;
     FirebaseAuth mAuth;
     LinkedList<String> allUsers;
@@ -118,8 +115,6 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
 
         editIcon = findViewById(R.id.editImageV_Button_);
-
-        dataSV = findViewById(R.id.scrollViewProfile);
 
 
         //TODO:
@@ -818,7 +813,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         return 0;
     }
 
-    public void goToHomeAtempt(View view) {
+    public void goToHomeAttempt(View view) {
         nextClass = homeScreen.class;
         if (!allFieldsCompleted())
             createEmptyFieldsDialog();

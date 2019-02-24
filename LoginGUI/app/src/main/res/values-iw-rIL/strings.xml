@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Family Hub</string>
+    <string name="Login_activity_name">התחברות</string>
+    <string name="title_activity_login">כניסה</string>
+    <string name="prompt_email">דואר אלקטרוני</string>
+    <string name="prompt_password">ססמא (אופציונלי)</string>
+    <string name="action_sign_in">התחבר או הירשם</string>
+    <string name="action_sign_in_short">התחבר</string>
+    <string name="error_invalid_email">הדואר האלקטרוני לא קיים במערכת</string>
+    <string name="error_incorrect_password">הססמא שהוכנסה שגויה</string>
+    <string name="error_field_required">יש למלא את כל השדות</string>
+    <string name="permission_rationale">נחוצה גישה לאנשי הקשר כדי לשלוח מייל</string>
+    <string name="title_activity_new_account">חשבון חדש</string>
+    <string name="sign_up_button">נשמע נפלא! אני רוצה להירשם</string>
+    <string name="username_header">שם משתמש</string>
+    <string name="password_header">ססמא</string>
+    <string name="username_hint">דואר אלקטרוני</string>
+    <string name="password_hint">ססמא</string>
+</resources>

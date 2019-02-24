@@ -4,6 +4,8 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
+    <string name="username_header">Username</string>
+    <string name="password_header">Password</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -12,72 +14,71 @@
     <!-- <string name="error_invalid_password">Your password is too short</string> -->
     <string name="error_incorrect_password">Your password is incorrect</string>
     <string name="error_field_required">All fields are required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."
     </string>
 
-    <string name="title_activity_new_acount">New Acount</string>
+    <string name="title_activity_new_account">New Account</string>
     <string name="sign_up_button">sounds great! sign me up</string>
-    <string name="newAcountMainText">-for an easier lifeStyle\n-for big families\n-for people that love their family</string>
-    <string name="eror_in_system">An eror in our system has occured.</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_new">new</string>
-    <string name="sign_up_header">Sign up</string>
-    <string name="members_header"><u>family Members</u></string>
+    <string name="newAcountMainText" translatable="false">-for an easier lifeStyle\n-for big families\n-for people that love their family</string>
+    <string name="eror_in_system" translatable="false">An error in our system has occurred.</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="action_new" translatable="false">new</string>
+    <string name="sign_up_header" translatable="false">Sign up</string>
+    <string name="members_header" translatable="false"><u>family Members</u></string>
 
     <!--defaults-->
-    <string name="full_name_default">FULL NAME</string>
-    <string name="phone_default">+000-000-0000</string>
-    <string name="email_default">XXX@XXX.XXX</string>
-    <string name="bday_default">00/00/0000 (birth day)</string>
-    <string name="city_default">XXX (your city)</string>
-    <string name="adress_default">XXX street - 000</string>
+    <string name="full_name_default" translatable="false">FULL NAME</string>
+    <string name="phone_default" translatable="false">+000-000-0000</string>
+    <string name="email_default" translatable="false">XXX@XXX.XXX</string>
+    <string name="bday_default" translatable="false">00/00/0000 (birth day)</string>
+    <string name="city_default" translatable="false">XXX (your city)</string>
+    <string name="adress_default" translatable="false">XXX street - 000</string>
 
 
     <!--signUp problems-->
-    <string name="user_taken">An acount was all ready opend with this E-mail.</string>
-    <string name="user_not_proper">E-mail not valid.</string>
-    <string name="pass_not_match">Your passwords are not matching.</string>
-    <string name="pass_not_proper">The password should be exactly 6 numbers beetwin 0-9.</string>
+    <string name="user_taken" translatable="false">An acount was all ready opend with this E-mail.</string>
+    <string name="user_not_proper" translatable="false">E-mail not valid.</string>
+    <string name="pass_not_match" translatable="false">Your passwords are not matching.</string>
+    <string name="pass_not_proper" translatable="false">The password should be exactly 6 numbers beetwin 0-9.</string>
 
 
     <!--sign up page strings-->
-    <string name="email_hint">E-mail</string>
+    <string name="username_hint">E-mail</string>
     <string name="password_hint">6 Digit Password</string>
-    <string name="re_enter_password_hint">Re-enter Password</string>
+    <string name="re_enter_password_hint" translatable="false">Re-enter Password</string>
 
     <!--Medical-->
-    <string name="medic_header">Medical Records - XXX</string>
+    <string name="medic_header" translatable="false">Medical Records - XXX</string>
 
     <!--events-->
-    <string name="event_header">EVENT_NAME</string>
-    <string name="event_date_header">Date:</string>
-    <string name="event_host">Host:</string>
-    <string name="event_location">Location:</string>
-    <string name="event_coming_text">Coming?</string>
-    <string name="event_btn_yes">yes</string>
-    <string name="event_btn_no">no</string>
-    <string name="event_btn_maybe">maybe</string>
-    <string name="event_description_header">Description</string>
+    <string name="event_header" translatable="false">EVENT_NAME</string>
+    <string name="event_date_header" translatable="false">Date:</string>
+    <string name="event_host" translatable="false">Host:</string>
+    <string name="event_location" translatable="false">Location:</string>
+    <string name="event_coming_text" translatable="false">Coming?</string>
+    <string name="event_btn_yes" translatable="false">yes</string>
+    <string name="event_btn_no" translatable="false">no</string>
+    <string name="event_btn_maybe" translatable="false">maybe</string>
+    <string name="event_description_header" translatable="false">Description</string>
 
 
     <!-- -
         This is an ad unit ID for an interstitial test ad. Replace with your own interstitial ad unit id.
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
-    <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="h">sign</string>
-    <string name="title_activity_home_screen">homeScreen</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_full_name">israel israeli</string>
-    <string name="nav_header_next_event">next: event - date</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="title_activity_family_members">FamilyMembers</string>
-    <string name="empty_fields_dialog_message">Oops! you left some fields empty.. Keeping them empty can effect on the application functionality and stability.</string>
-    <string name="empty_fields_dialog_title">Some Fields Left Empty</string>
-    <string name="keep_on_with_un_filled_fields_button_text">Keep on</string>
-    <string name="cancel_keep_on_with_un_filled_fields_button_text">Go back</string>
+    <string name="interstitial_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="h" translatable="false">sign</string>
+    <string name="title_activity_home_screen" translatable="false">homeScreen</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_full_name" translatable="false">israel israeli</string>
+    <string name="nav_header_next_event" translatable="false">next: event - date</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="title_activity_family_members" translatable="false">FamilyMembers</string>
+    <string name="empty_fields_dialog_message" translatable="false">Oops! you left some fields empty.. Keeping them empty can effect on the application functionality and stability.</string>
+    <string name="empty_fields_dialog_title" translatable="false">Some Fields Left Empty</string>
+    <string name="keep_on_with_un_filled_fields_button_text" translatable="false">Keep on</string>
+    <string name="cancel_keep_on_with_un_filled_fields_button_text" translatable="false">Go back</string>
 
 
     <string-array name="privacyOptions">
@@ -87,13 +88,13 @@
     </string-array>
 
     //database titles
-    <string name="public_usersDB">publicUsers</string>
-    <string name="personal_dataDB">personalData</string>
-    <string name="family_treeDB">familyTree</string>
-    <string name="all_usersDB">allUsers</string>
+    <string name="public_usersDB" translatable="false">publicUsers</string>
+    <string name="personal_dataDB" translatable="false">personalData</string>
+    <string name="family_treeDB" translatable="false">familyTree</string>
+    <string name="all_usersDB" translatable="false">allUsers</string>
 
     //familyTree
-    <string name="god_name">hod kdushato hacol yachol</string>
-    <string name="unkown_name">%unknown%</string>
+    <string name="god_name" translatable="false">hod kdushato hacol yachol</string>
+    <string name="unkown_name" translatable="false">%unknown%</string>
 
 </resources>
