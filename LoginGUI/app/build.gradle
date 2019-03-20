@@ -62,6 +62,13 @@ dependencies {
 
     //gif
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
+
+    //Text Animations Library
+    def htextview_version = "0.1.6"
+
+    implementation "com.hanks:htextview-base:$htextview_version"        // base library
+    implementation "com.hanks:htextview-line:$htextview_version"        // optional
+
 }
 
 apply plugin: 'com.google.gms.google-services'
