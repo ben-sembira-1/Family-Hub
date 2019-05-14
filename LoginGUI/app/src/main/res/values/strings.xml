@@ -96,5 +96,7 @@
     //familyTree
     <string name="god_name" translatable="false">hod kdushato hacol yachol</string>
     <string name="unkown_name" translatable="false">%unknown%</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

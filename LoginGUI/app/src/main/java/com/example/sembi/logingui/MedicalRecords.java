@@ -1,8 +1,6 @@
 package com.example.sembi.logingui;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -15,6 +13,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public class MedicalRecords extends AppCompatActivity {
@@ -45,7 +46,7 @@ public class MedicalRecords extends AppCompatActivity {
 //                .setLayout(R.layout.medical_record_item_layout)
 //                .setQuery(query , MedicalRecordModel.class)
 //                .build();
-         adapter = new MedicalRecordsListAdapter(this, records);
+        adapter = new MedicalRecordsListAdapter(this, records);
 
         mMedicalRecordsList.setAdapter(adapter);
 //        mMedicalRecordsList.setAdapter(new FirebaseListAdapter<MedicalRecordModel>(firebaseOptions) {

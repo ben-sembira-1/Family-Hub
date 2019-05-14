@@ -39,7 +39,7 @@
 
     <ListView
         android:id="@+id/medicalRecordsListView"
-        android:layout_width="395dp"
+        android:layout_width="200dp"
         android:layout_height="463dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"

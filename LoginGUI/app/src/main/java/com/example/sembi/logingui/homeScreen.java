@@ -1,12 +1,14 @@
 package com.example.sembi.logingui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewStub;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,16 +34,12 @@ public class homeScreen extends AppCompatActivity
 
     TextView navFullName;
 
-    ViewStub stub;
-
     private static int currentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
-
-        stub = findViewById(R.id.layout_stub);
 
         currentId = -1;
 
@@ -146,6 +144,13 @@ public class homeScreen extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void inflate(int layoutID) {
+        LinearLayout ll = findViewById(R.id.stubLinearLayout);
+        ll.removeAllViews();
+        LayoutInflater LI = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ll.addView(LI.inflate(layoutID, ll, false));
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -157,13 +162,14 @@ public class homeScreen extends AppCompatActivity
         if (id == R.id.nav_members && id != currentId) {
 
         } else if (id == R.id.nav_events && id != currentId) {
-            stub.setLayoutResource(R.layout.activity_event);
-            stub.inflate();
+
+            inflate(R.layout.activity_event);
             currentId = id;
         } else if (id == R.id.nav_give_take && id != currentId) {
 
         } else if (id == R.id.nav_tree && id != currentId) {
-
+            inflate(R.layout.activity_family_tree);
+            currentId = id;
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -178,7 +184,7 @@ public class homeScreen extends AppCompatActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
 

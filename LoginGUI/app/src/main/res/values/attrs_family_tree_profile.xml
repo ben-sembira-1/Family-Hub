@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="family_tree_profile">
+        <attr name="fullName" format="string" />
+        <attr name="drawable" format="reference" />
+    </declare-styleable>
+</resources>
