@@ -8,15 +8,15 @@ public class ProfileModel {
     private String email;
     private String date;
     private String city;
-    private String adress;
+    private String address;
 
-    public ProfileModel(String name, String phone, String email, String date, String city, String adress) {
+    public ProfileModel(String name, String phone, String email, String date, String city, String address) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.date = date;
         this.city = city;
-        this.adress = adress;
+        this.address = address;
     }
 
     public ProfileModel(){
@@ -25,7 +25,7 @@ public class ProfileModel {
         this.email = "";
         this.date = "";
         this.city = "";
-        this.adress = "";
+        this.address = "";
     }
 
     public String getName() {
@@ -68,12 +68,12 @@ public class ProfileModel {
         this.city = city;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
 }

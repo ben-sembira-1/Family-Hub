@@ -2,14 +2,15 @@ package com.example.sembi.logingui;
 
 import android.content.Intent;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,7 +26,6 @@ public class signUp extends AppCompatActivity {
     Button signUpBtn;
     TextView comment;
     FirebaseAuth mAuth;
-    String usrName;
     int passA, passB;
 
     private FirebaseDatabase mDatabaseReference;
@@ -46,25 +46,18 @@ public class signUp extends AppCompatActivity {
         comment = findViewById(R.id.commentTextV);
 
 
-        setData();
+        setPasswordsInVars();
     }
 
 
-    private void setData() {
-        usrName = usernameEditT.getText().toString();
-        boolean flag = false;
+    private void setPasswordsInVars() {
 
-        if (isLegalPassword(passwordEditT.getText().toString(), 6)) {
+        if (isLegalPassword(passwordEditT.getText().toString(), 6)
+                && isLegalPassword(checkPasswordEditT.getText().toString(), 6)) {
             passA = Integer.parseInt(passwordEditT.getText().toString());
+            passB = Integer.parseInt(checkPasswordEditT.getText().toString());
         } else {
-            flag = true;
-        }
-        if (isLegalPassword(checkPasswordEditT.getText().toString(), 6)) {
-            passB = Integer.valueOf(checkPasswordEditT.getText().toString());
-        }
-        if (flag) {
             passA = passB = -1;
-
         }
     }
 
@@ -99,9 +92,8 @@ public class signUp extends AppCompatActivity {
     //1. sign up will procceed
     //2. a message will go back and ask the user for different sign up details.
 
-    //TODO in while time it is checking in data base, change color to grey.
     public void signUpAtempt(View view) {
-        setData();
+        setPasswordsInVars();
 
         setETColor(getColor(R.color.grey), getColor(R.color.grey));
 
@@ -131,15 +123,11 @@ public class signUp extends AppCompatActivity {
                                     if (task.isSuccessful()) {
 
                                         comment.setVisibility(View.INVISIBLE);
-
-                                        String user = buildUsername(usrName);
 //                                        Date date = new Date();
 //                                        date.setYear(Calendar.getInstance().get(Calendar.YEAR));
 //                                        date.setMonth(Calendar.getInstance().get(Calendar.MONTH));
 //                                        date.setDate(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
                                         Profile.EDIT_MODE = true;
-
-                                        String email = usernameEditT.getText().toString();
 
                                         //TODO user should be?
                                         ProfileModel profileModel = new ProfileModel("","", mAuth.getCurrentUser().getEmail(), "", "", "");
@@ -173,6 +161,7 @@ public class signUp extends AppCompatActivity {
 
     }
 
+    //TODO לא בתיק פרוייקט
     public static String buildUsername(String s){
         String temp = s;
 

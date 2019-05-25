@@ -1,14 +1,15 @@
 package com.example.sembi.logingui;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,8 @@ public class FamilyTreeNodeUIListAdapter extends ArrayAdapter<FamilyTreeNodeUIMo
         TextView name = listItem.findViewById(R.id.FamilyTreeNodeUI_TV);
         ImageView IV = listItem.findViewById(R.id.FamilyTreeNodeUI_IV);
         name.setText(current.getName());
-        IV.setImageURI(current.getIV());
+        //TODO take care of URI
+        //IV.setImageURI(current.getIV());
         return listItem;
     }
 }

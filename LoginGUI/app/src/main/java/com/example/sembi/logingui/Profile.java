@@ -22,6 +22,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,10 +36,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.LinkedList;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 public class Profile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -371,7 +371,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     private void setPrivacy(int i, String s) {
 
         String[] titles = {"name", "phone", "email", "date", "city", "adress"};
-        String[] data = {profileData.getName(), profileData.getPhone(), profileData.getEmail(), profileData.getDate(), profileData.getCity(), profileData.getAdress()};
+        String[] data = {profileData.getName(), profileData.getPhone(), profileData.getEmail(), profileData.getDate(), profileData.getCity(), profileData.getAddress()};
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference();
@@ -384,7 +384,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
             databaseReference.child(titles[i]).setValue(data[i]);
     }
 
-    private static String preperStringToDataBase(String s) {
+    public static String preperStringToDataBase(String s) {
         int numOfDotsFound = 0;
         for (int i = 0; i < s.length() - numOfDotsFound; i++) {
             if (s.charAt(i) == '.') {
@@ -457,7 +457,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
     private void setDataUpdaterFromDataBase(DataSnapshot dataSnapshot) {
         profileData.setName(dataSnapshot.getValue(ProfileModel.class).getName());
-        profileData.setAdress(dataSnapshot.getValue(ProfileModel.class).getAdress());
+        profileData.setAddress(dataSnapshot.getValue(ProfileModel.class).getAddress());
         profileData.setCity(dataSnapshot.getValue(ProfileModel.class).getCity());
         profileData.setDate(dataSnapshot.getValue(ProfileModel.class).getDate());
         profileData.setEmail(dataSnapshot.getValue(ProfileModel.class).getEmail());
@@ -495,7 +495,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         publicData[1] = dataSnapshot.getValue(ProfileModel.class).getEmail();
         publicData[2] = dataSnapshot.getValue(ProfileModel.class).getDate();
         publicData[3] = dataSnapshot.getValue(ProfileModel.class).getCity();
-        publicData[4] = dataSnapshot.getValue(ProfileModel.class).getAdress();
+        publicData[4] = dataSnapshot.getValue(ProfileModel.class).getAddress();
 
         setPrivacySpinners();
     }
@@ -602,7 +602,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         ref.child("email").setValue("%f" + profileData.getEmail());
         ref.child("date").setValue("%f" + profileData.getDate());
         ref.child("city").setValue("%f" + profileData.getCity());
-        ref.child("adress").setValue("%f" + profileData.getAdress());
+        ref.child("adress").setValue("%f" + profileData.getAddress());
     }
 
     private void changeVisibality() {
@@ -651,7 +651,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         TextDataArray[2].setText(profileData.getEmail());
         TextDataArray[3].setText(profileData.getDate());
         TextDataArray[4].setText(profileData.getCity());
-        TextDataArray[5].setText(profileData.getAdress());
+        TextDataArray[5].setText(profileData.getAddress());
     }
 
     private void saveChangesInDataBase() {
@@ -672,7 +672,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         EditTextDataArray[2].setText(profileData.getEmail());
         EditTextDataArray[3].setText(profileData.getDate());
         EditTextDataArray[4].setText(profileData.getCity());
-        EditTextDataArray[5].setText(profileData.getAdress());
+        EditTextDataArray[5].setText(profileData.getAddress());
     }
 
     public String getPersonalDataFromEditTexts(int i) {
@@ -873,9 +873,15 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     public void navigate(View view) {
         if (EDIT_MODE)
             return;
-        Uri geoLocation = Uri.parse("geo:0,0?q="
-                + setStringsCompatibleWithUri(profileData.getCity())
-                + "+" + setStringsCompatibleWithUri(profileData.getAdress()));
+
+        String city = setStringsCompatibleWithUri(profileData.getCity()),
+                address = setStringsCompatibleWithUri(profileData.getAddress());
+
+        if (address.length() != 0)
+            address = "+" + address;
+
+        Uri geoLocation = Uri.parse("geo:0,0?q=" + city + address);
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -885,6 +891,9 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private static String setStringsCompatibleWithUri(String s) {
+        if (s.length() == 0) {
+            return "";
+        }
         String compString = "";
         s = s.trim();
         while ((s.length() > 0)) {

@@ -1,8 +1,12 @@
 package com.example.sembi.logingui;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,6 +23,7 @@ public class FamilyTree extends AppCompatActivity {
 
     private FamilyTreeNode god;
     //String familyTreeString;
+    private String currentUser;
     private DataSnapshot publicUsers;
     private DatabaseReference reference;
     private FirebaseUser firebaseUser;
@@ -31,7 +36,7 @@ public class FamilyTree extends AppCompatActivity {
 
     //for ListView
     private FamilyTreeNodeUIListAdapter adapter;
-    private ListView brothersLV, kidsLV;
+    private ListView brothersListView, kidsLV;
     private ArrayList<FamilyTreeNodeUIModel> brothersModelsList, kidsModelsList;
 
     @Override
@@ -39,13 +44,18 @@ public class FamilyTree extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family_tree);
 
-        god = new FamilyTreeNode(getString(R.string.god_name));
+//        god = new FamilyTreeNode(getString(R.string.god_name));
         //familyTreeString = null;
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference();
 
-        brothersLV = findViewById(R.id.brothersListView);
+        brothersListView = findViewById(R.id.brothersListView);
         kidsLV = findViewById(R.id.kidsListView);
+
+        //brothers
+        brothersModelsList = new ArrayList<>();
+        adapter = new FamilyTreeNodeUIListAdapter(this, brothersModelsList);
+        brothersListView.setAdapter(adapter);
 
         intializeFam();
         preperLists();
@@ -58,10 +68,11 @@ public class FamilyTree extends AppCompatActivity {
 
         adapter = new FamilyTreeNodeUIListAdapter(this, brothersModelsList);
 
-        brothersLV.setAdapter(adapter);
+        brothersListView.setAdapter(adapter);
     }
 
     private void intializeFam(){
+        currentUser = Profile.preperStringToDataBase(firebaseUser.getEmail());
         mParents = new LinkedList();
         //(mKids) -> (married/divorced) -> (a partner from this list of partners, list of kids)
         mMarried = new LinkedList<>();
@@ -69,24 +80,26 @@ public class FamilyTree extends AppCompatActivity {
     }
 
     private void setDBListeners() {
-//        family tree
-//        getFamilyTreeReference().addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                familyTreeString = dataSnapshot.getValue(String.class);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError error) {
-//                // Failed to read value
-//
-//            }
-//        });
+        //family tree
+        DatabaseReference publicUserReference = getPublicUserReference();
+        publicUserReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                collectAllRecords(dataSnapshot);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+
+            }
+        });
 
         //all users
-        getAllUsersReference().addValueEventListener(new ValueEventListener() {
+        getAllUsersReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -103,6 +116,20 @@ public class FamilyTree extends AppCompatActivity {
 
 
     }
+
+    private void collectAllRecords(DataSnapshot dataSnapshot) {
+        for (DataSnapshot currDS : dataSnapshot.child(currentUser).child("fam").child("kids").getChildren()) {
+            DataSnapshot currKid = dataSnapshot.child(Profile.preperStringToDataBase(currDS.getValue(String.class)));
+            String name = currKid.child(getString(R.string.personal_dataDB))
+                    .child("name")
+                    .getValue(String.class);
+            //TODO
+            //Uri uri = new Uri.Builder().build();
+            Uri uri = null;
+            brothersModelsList.add(new FamilyTreeNodeUIModel(name, uri));
+        }
+    }
+
 
     private DatabaseReference getAllUsersReference(){
         return reference.child(getString(R.string.all_usersDB));
@@ -163,9 +190,15 @@ public class FamilyTree extends AppCompatActivity {
     }
 
 
-//    private DatabaseReference getFamilyTreeReference(){
-//        return reference.child(getString(R.string.family_treeDB));
-//    }
+    private DatabaseReference getPublicUserReference() {
+        return reference.child(getString(R.string.public_usersDB));
+    }
+
+    public void goHome(View view) {
+        startActivity(new Intent(this, homeScreen.class));
+    }
+
+
 //    public void BuildTree(){
 //        String theCurrentTree = familyTreeString;
 //        String currRelation = "";

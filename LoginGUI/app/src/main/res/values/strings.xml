@@ -19,7 +19,7 @@
 
     <string name="title_activity_new_account">New Account</string>
     <string name="sign_up_button">sounds great! sign me up</string>
-    <string name="newAcountMainText" translatable="false">-for an easier lifeStyle\n-for big families\n-for people that love their family</string>
+    <string name="newAcountMainText" translatable="false">-For an easier life style\n-For big families\n-For those who love their family</string>
     <string name="eror_in_system" translatable="false">An error in our system has occurred.</string>
     <string name="action_settings" translatable="false">Settings</string>
     <string name="action_new" translatable="false">new</string>
@@ -48,7 +48,7 @@
     <string name="re_enter_password_hint" translatable="false">Re-enter Password</string>
 
     <!--Medical-->
-    <string name="medic_header" translatable="false">Medical Records - XXX</string>
+    <string name="medic_header" translatable="false">A List</string>
 
     <!--events-->
     <string name="event_header" translatable="false">EVENT_NAME</string>
@@ -92,11 +92,12 @@
     <string name="personal_dataDB" translatable="false">personalData</string>
     <string name="family_treeDB" translatable="false">familyTree</string>
     <string name="all_usersDB" translatable="false">allUsers</string>
+    <string name="famDB" translatable="false">fam</string>
 
     //familyTree
     <string name="god_name" translatable="false">hod kdushato hacol yachol</string>
     <string name="unkown_name" translatable="false">%unknown%</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+    <string name="appwidget_text" translatable="false">EXAMPLE</string>
+    <string name="add_widget" translatable="false">Add widget</string>
 
 </resources>

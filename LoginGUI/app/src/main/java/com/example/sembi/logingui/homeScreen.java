@@ -1,15 +1,19 @@
 package com.example.sembi.logingui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -22,17 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 public class homeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    TextView navFullName;
+    TextView navFullName, navNextEvent;
+    ImageView navProfilePic;
 
     private static int currentId;
 
@@ -53,6 +52,7 @@ public class homeScreen extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                newPost();
             }
         });
 
@@ -69,6 +69,10 @@ public class homeScreen extends AppCompatActivity
         navFullName = headerView.findViewById(R.id.nav_fullName);
 
         setNav();
+    }
+
+    private void newPost() {
+        //TODO
     }
 
     @Override
@@ -110,6 +114,14 @@ public class homeScreen extends AppCompatActivity
         });
     }
 
+    private void setpic() {
+        //TODO
+    }
+
+    private void setNextEvent() {
+        //TODO
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -144,12 +156,12 @@ public class homeScreen extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void inflate(int layoutID) {
-        LinearLayout ll = findViewById(R.id.stubLinearLayout);
-        ll.removeAllViews();
-        LayoutInflater LI = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ll.addView(LI.inflate(layoutID, ll, false));
-    }
+//    private void inflate(int layoutID) {
+//        LinearLayout ll = findViewById(R.id.stubLinearLayout);
+//        ll.removeAllViews();
+//        LayoutInflater LI = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        ll.addView(LI.inflate(layoutID, ll, false));
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -160,16 +172,17 @@ public class homeScreen extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_members && id != currentId) {
-
+            startActivity(new Intent(this, MedicalRecords.class));
         } else if (id == R.id.nav_events && id != currentId) {
 
-            inflate(R.layout.activity_event);
-            currentId = id;
-        } else if (id == R.id.nav_give_take && id != currentId) {
-
+//            inflate(R.layout.activity_event);
+//            currentId = id;
+        } else if (id == R.id.nav_new_event && id != currentId) {
+            startActivity(new Intent(this, Event.class));
         } else if (id == R.id.nav_tree && id != currentId) {
-            inflate(R.layout.activity_family_tree);
-            currentId = id;
+            startActivity(new Intent(this, FamilyTree.class));
+//            inflate(R.layout.activity_family_tree);
+//            currentId = id;
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
