@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.LinkedList;
 import java.util.List;
 
+// TODO Currently Not In Use
 public class FamilyTreeNode extends AppCompatActivity {
 
     private String email;
@@ -78,7 +79,6 @@ public class FamilyTreeNode extends AppCompatActivity {
             addPartner(partner,isMarried);
             return;
         }
-
 
 
         //kid exists in list
@@ -194,7 +194,6 @@ public class FamilyTreeNode extends AppCompatActivity {
     }
 
 
-
     private void addBrother(FamilyTreeNode brother, Boolean fromAnotherParent) {
         if (fromAnotherParent)
             brothersFromAnotherPartner.add(brother);
@@ -219,7 +218,7 @@ public class FamilyTreeNode extends AppCompatActivity {
     private void checkRepeats(FamilyTreeNode aux) throws Exception {
         Boolean flag = false;
 
-            //TODO - check all lists.
+        //TODO - check all lists.
 
         if (flag)
             throw new ArithmeticException("2 or more identical nodes");

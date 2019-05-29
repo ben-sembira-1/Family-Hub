@@ -1,13 +1,14 @@
 package com.example.sembi.logingui;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -32,8 +33,8 @@ public class MedicalRecordsListAdapter extends ArrayAdapter<MedicalRecordModel> 
         MedicalRecordModel current = records.get(position);
         TextView title = listItem.findViewById(R.id.headerMedicalRecord);
         TextView content = listItem.findViewById(R.id.dataMedicalRecord);
-        title.setText(current.getTitle());
-        content.setText(current.getContent());
+//        title.setText(current.getTitle());
+//        content.setText(current.getContent());
         return listItem;
     }
 }

@@ -133,7 +133,7 @@
         android:layout_marginStart="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:hapticFeedbackEnabled="false"
-        android:onClick="logInAttempt"
+        android:onClick="loginAttempt"
         android:text="Log in!"
         app:layout_constraintBottom_toBottomOf="@+id/toggleButtonRemMe"
         app:layout_constraintEnd_toEndOf="parent"

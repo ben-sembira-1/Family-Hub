@@ -14,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,11 +31,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     private void autoSignIn() {
         if (serial_ASI != null && serial_user != null && uid != "" && serial_ASI != "" && serial_user != "") {
             Profile.setCurrentUserToMyUser();
-            logIn();
+            login();
         }
     }
 
@@ -170,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void logInAttempt(View view) {
+    public void loginAttempt(View view) {
         pass.setTextColor(getColor(R.color.grey));
         user.setTextColor(getColor(R.color.grey));
         if (user.getText().toString().length() == 0){
@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                         user.setTextColor(Color.BLACK);
                         if(task.isSuccessful()){
                             Toast.makeText(LoginActivity.this, "Signing In..", Toast.LENGTH_SHORT).show();
-                            logIn();
+                            login();
                         } else {
                             Toast.makeText(LoginActivity.this, "Authntication Failed!", Toast.LENGTH_SHORT).show();
                         }
@@ -204,7 +204,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void logIn() {
+    private void login() {
 //        FirebaseDatabase DB = FirebaseDatabase.getInstance();
 //        DatabaseReference DBRef = DB.getReference();
 //        if (remMe) {
@@ -216,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
-        myRef = database.getInstance().getReference().child("users").child(user.getUid()).child("personalData");
+        myRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("personalData");
         myRef.child("email").setValue(user.getEmail());
 
 

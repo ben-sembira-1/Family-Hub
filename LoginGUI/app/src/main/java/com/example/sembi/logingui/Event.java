@@ -1,13 +1,14 @@
 package com.example.sembi.logingui;
 
 import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import static java.lang.System.*;
+import androidx.appcompat.app.AppCompatActivity;
+
+import static java.lang.System.arraycopy;
 
 public class Event extends AppCompatActivity {
 
@@ -15,14 +16,12 @@ public class Event extends AppCompatActivity {
     private ImageView stateImageView;
 
 
-
-    private String host; //TODO
+    private EventUIModel eventData;
 
     static Boolean CHOSEN = false;
 
 
-
-    private static int STATE = 0;
+    private int STATE = 0;
     //-1 - no, 0 - thinking, 1 - yes
 
     @Override
@@ -37,22 +36,6 @@ public class Event extends AppCompatActivity {
         stateImageView = findViewById(R.id.comingStateImageV);
 
         refresh();
-    }
-
-    public static int getSTATE() {
-        return STATE;
-    }
-
-    public static void setSTATE(int STATE) {
-        Event.STATE = STATE;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
     }
 
     private void setButtons() {
@@ -93,6 +76,11 @@ public class Event extends AppCompatActivity {
     public void refresh(){
         setStateImageViewSrc();
         setInvisibility();
+        setEventModel();
+    }
+
+    private void setEventModel() {
+        //TODO setEventModelFromDatabase
     }
 
     private void setInvisibility() {
@@ -120,7 +108,7 @@ public class Event extends AppCompatActivity {
 
 
     public void goToHost(View view) {
-        Profile.setCurrentUser(host);
+        Profile.setCurrentUser(eventData.getHost());
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
     }

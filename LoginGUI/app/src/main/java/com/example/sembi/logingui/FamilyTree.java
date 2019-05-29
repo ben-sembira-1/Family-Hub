@@ -1,11 +1,19 @@
 package com.example.sembi.logingui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,8 +30,12 @@ import java.util.LinkedList;
 public class FamilyTree extends AppCompatActivity {
 
     private FamilyTreeNode god;
+
+
     //String familyTreeString;
     private String currentUser;
+    //for ListView
+    private FamilyTreeNodeUIListAdapter brothersAdapter, partnersAdapter;
     private DataSnapshot publicUsers;
     private DatabaseReference reference;
     private FirebaseUser firebaseUser;
@@ -31,13 +43,12 @@ public class FamilyTree extends AppCompatActivity {
     private LinkedList mParents;
     private LinkedList<LinkedList<String>> mMarried, mDivorced;
     private LinkedList<String> mBrothers;
+    private ListView brothersListView, partnersListView;
+    private ArrayList<FamilyTreeNodeUIModel> brothersModelsList, partnersModelsList;
 
-
-
-    //for ListView
-    private FamilyTreeNodeUIListAdapter adapter;
-    private ListView brothersListView, kidsLV;
-    private ArrayList<FamilyTreeNodeUIModel> brothersModelsList, kidsModelsList;
+    public void setCurrentUser(String currentUser) {
+        this.currentUser = Profile.prepareStringToDataBase(currentUser);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +57,7 @@ public class FamilyTree extends AppCompatActivity {
 
 //        god = new FamilyTreeNode(getString(R.string.god_name));
         //familyTreeString = null;
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference();
 
-        brothersListView = findViewById(R.id.brothersListView);
-        kidsLV = findViewById(R.id.kidsListView);
-
-        //brothers
-        brothersModelsList = new ArrayList<>();
-        adapter = new FamilyTreeNodeUIListAdapter(this, brothersModelsList);
-        brothersListView.setAdapter(adapter);
 
         intializeFam();
         preperLists();
@@ -64,15 +66,22 @@ public class FamilyTree extends AppCompatActivity {
 
     private void preperLists() {
 
-
-
-        adapter = new FamilyTreeNodeUIListAdapter(this, brothersModelsList);
-
-        brothersListView.setAdapter(adapter);
+        brothersListView = findViewById(R.id.brothersListView);
+        partnersListView = findViewById(R.id.partnersListView);
+        //brothers
+        brothersModelsList = new ArrayList<>();
+        brothersAdapter = new FamilyTreeNodeUIListAdapter(this, brothersModelsList);
+        brothersListView.setAdapter(brothersAdapter);
+        //partners
+        partnersModelsList = new ArrayList<>();
+        partnersAdapter = new FamilyTreeNodeUIListAdapter(this, partnersModelsList);
+        partnersListView.setAdapter(partnersAdapter);
     }
 
     private void intializeFam(){
-        currentUser = Profile.preperStringToDataBase(firebaseUser.getEmail());
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference();
+        setCurrentUser(firebaseUser.getEmail());
         mParents = new LinkedList();
         //(mKids) -> (married/divorced) -> (a partner from this list of partners, list of kids)
         mMarried = new LinkedList<>();
@@ -88,7 +97,8 @@ public class FamilyTree extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 collectAllRecords(dataSnapshot);
-                adapter.notifyDataSetChanged();
+                brothersAdapter.notifyDataSetChanged();
+                partnersAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -119,7 +129,7 @@ public class FamilyTree extends AppCompatActivity {
 
     private void collectAllRecords(DataSnapshot dataSnapshot) {
         for (DataSnapshot currDS : dataSnapshot.child(currentUser).child("fam").child("kids").getChildren()) {
-            DataSnapshot currKid = dataSnapshot.child(Profile.preperStringToDataBase(currDS.getValue(String.class)));
+            DataSnapshot currKid = dataSnapshot.child(Profile.prepareStringToDataBase(currDS.getValue(String.class)));
             String name = currKid.child(getString(R.string.personal_dataDB))
                     .child("name")
                     .getValue(String.class);
@@ -127,6 +137,8 @@ public class FamilyTree extends AppCompatActivity {
             //Uri uri = new Uri.Builder().build();
             Uri uri = null;
             brothersModelsList.add(new FamilyTreeNodeUIModel(name, uri));
+            //TODO Collect correct records
+            partnersModelsList.add(new FamilyTreeNodeUIModel(name, uri));
         }
     }
 
@@ -239,4 +251,39 @@ public class FamilyTree extends AppCompatActivity {
 //        }
 //        return true;
 //    }
+
+
+    public class FamilyTreeNodeUIListAdapter extends ArrayAdapter<FamilyTreeNodeUIModel> {
+
+        private Context mContext;
+        private ArrayList<FamilyTreeNodeUIModel> records;
+
+        public FamilyTreeNodeUIListAdapter(@NonNull Context context, ArrayList<FamilyTreeNodeUIModel> records) {
+            super(context, 0, records);
+            mContext = context;
+            this.records = records;
+        }
+
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            View listItem = convertView;
+            if (listItem == null) {
+                listItem = LayoutInflater.from(mContext).inflate(R.layout.family_tree_node_ui, null);
+
+            }
+            FamilyTreeNodeUIModel current = records.get(position);
+            TextView name = listItem.findViewById(R.id.FamilyTreeNodeUI_TV);
+            ImageView IV = listItem.findViewById(R.id.FamilyTreeNodeUI_IV);
+            name.setText(current.getName());
+            //TODO take care of URI
+            //IV.setImageURI(current.getIV());
+            listItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO Intents...... make Static,Public Boolean value for Toggle
+                }
+            });
+            return listItem;
+        }
+    }
 }

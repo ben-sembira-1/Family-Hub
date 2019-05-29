@@ -72,7 +72,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     ImageView editIcon;
     FirebaseAuth mAuth;
     LinkedList<String> allUsers;
-    LinkedList<DataSnapshot> allRequest;
+    LinkedList<DataSnapshot> allRequests;
     LinkedList<DataSnapshot> allPermissions;
     Spinner phoneSpinner, emailSpinner, bdaySpinner, citySpinner, addressSpinner;
     private ProfileModel profileData;
@@ -92,6 +92,18 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         Profile.setCurrentUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
+    public static String prepareStringToDataBase(String s) {
+        int numOfDotsFound = 0;
+        for (int i = 0; i < s.length() - numOfDotsFound; i++) {
+            if (s.charAt(i) == '.') {
+                s = s.substring(0, i) + "*" + s.substring(i + 1);
+                numOfDotsFound++;
+                i--;
+            }
+        }
+        return s;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +113,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         setSpinners();
 
         allUsers = new LinkedList<String>();
-        allRequest = new LinkedList<DataSnapshot>();
+        allRequests = new LinkedList<DataSnapshot>();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -147,7 +159,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     private void setRequestsListener() {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference().child(getString(R.string.public_usersDB))
-                .child(preperStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                 .child("fam").child("requests");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -165,18 +177,18 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void handleRequests(DataSnapshot dataSnapshot) {
-        allRequest = new LinkedList<DataSnapshot>();
+        allRequests = new LinkedList<DataSnapshot>();
         for (DataSnapshot db : dataSnapshot.getChildren()) {
-            allRequest.add(db);
+            allRequests.add(db);
         }
 
-        if (allRequest.size() > 0) {
+        if (allRequests.size() > 0) {
             showRequests();
         }
     }
 
     private void showRequests() {
-        for (final DataSnapshot s : allRequest) {
+        for (final DataSnapshot s : allRequests) {
 
             final String email = s.child("email").getValue().toString();
             final String connection = s.child("connection").getValue().toString();
@@ -204,7 +216,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
                     }
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                             .child(getString(R.string.public_usersDB))
-                            .child(preperStringToDataBase(email))
+                            .child(prepareStringToDataBase(email))
                             .child("fam")
                             .child("permissions").push();
                     ref.child("email")
@@ -217,7 +229,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
                         DatabaseReference newMember =  FirebaseDatabase.getInstance().getReference()
                                 .child(getString(R.string.public_usersDB))
-                                .child(preperStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                                 .child("fam")
                                 .child("parents").push();
 
@@ -229,7 +241,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
                         DatabaseReference newMember =  FirebaseDatabase.getInstance().getReference()
                                 .child(getString(R.string.public_usersDB))
-                                .child(preperStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                                 .child("fam")
                                 .child("kids").push();
 
@@ -252,10 +264,21 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         }
     }
 
+    private void handlePermissions(DataSnapshot dataSnapshot) {
+        allPermissions = new LinkedList<DataSnapshot>();
+        for (DataSnapshot db : dataSnapshot.getChildren()) {
+            allPermissions.add(db);
+        }
+
+        if (allPermissions.size() > 0) {
+            showPermissions();
+        }
+    }
+
     private void setPermissionsListener() {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference().child(getString(R.string.public_usersDB))
-                .child(preperStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                 .child("fam").child("permissions");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -270,57 +293,6 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
                 // Failed to read value
             }
         });
-    }
-
-    private void handlePermissions(DataSnapshot dataSnapshot) {
-        allPermissions = new LinkedList<DataSnapshot>();
-        for (DataSnapshot db : dataSnapshot.getChildren()) {
-            allPermissions.add(db);
-        }
-
-        if (allPermissions.size() > 0) {
-            showPermissions();
-        }
-    }
-
-    private void showPermissions() {
-        for (final DataSnapshot s : allPermissions) {
-
-            final String email = s.child("email").getValue().toString();
-            final String connection = s.child("connection").getValue().toString();
-            final String name = s.child("name").getValue().toString();
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(name + " accepted your request");
-
-// Set up the buttons
-            builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (connection.equals("parent")) {
-                        DatabaseReference newMember =  FirebaseDatabase.getInstance().getReference()
-                                .child(getString(R.string.public_usersDB))
-                                .child(preperStringToDataBase(mAuth.getCurrentUser().getEmail()))
-                                .child("fam")
-                                .child("parents").push();
-
-                        newMember.setValue(email);
-                    }else {
-                        DatabaseReference newMember =  FirebaseDatabase.getInstance().getReference()
-                                .child(getString(R.string.public_usersDB))
-                                .child(preperStringToDataBase(mAuth.getCurrentUser().getEmail()))
-                                .child("fam")
-                                .child("kids").push();
-
-                        newMember.setValue(email);
-                    }
-
-                    s.getRef().removeValue();
-                }
-            });
-
-            builder.show();
-        }
     }
 
     private void setAllUsersListener() {
@@ -368,32 +340,60 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
     }
 
-    private void setPrivacy(int i, String s) {
+    private void showPermissions() {
+        for (final DataSnapshot s : allPermissions) {
+
+            final String email = s.child("email").getValue().toString();
+            final String connection = s.child("connection").getValue().toString();
+            final String name = s.child("name").getValue().toString();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(name + " accepted your request");
+
+// Set up the buttons
+            builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (connection.equals("parent")) {
+                        DatabaseReference newMember = FirebaseDatabase.getInstance().getReference()
+                                .child(getString(R.string.public_usersDB))
+                                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                                .child("fam")
+                                .child("parents").push();
+
+                        newMember.setValue(email);
+                    } else {
+                        DatabaseReference newMember = FirebaseDatabase.getInstance().getReference()
+                                .child(getString(R.string.public_usersDB))
+                                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                                .child("fam")
+                                .child("kids").push();
+
+                        newMember.setValue(email);
+                    }
+
+                    s.getRef().removeValue();
+                }
+            });
+
+            builder.show();
+        }
+    }
+
+    private void setPrivacy(int i, String privacy) {
 
         String[] titles = {"name", "phone", "email", "date", "city", "adress"};
         String[] data = {profileData.getName(), profileData.getPhone(), profileData.getEmail(), profileData.getDate(), profileData.getCity(), profileData.getAddress()};
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference();
-        databaseReference = databaseReference.child("publicUsers").child(preperStringToDataBase(mAuth.getCurrentUser().getEmail())).child("personalData");
-        if (s.equals("Only me"))
+        databaseReference = databaseReference.child("publicUsers").child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail())).child("personalData");
+        if (privacy.equals("Only me"))
             databaseReference.child(titles[i]).setValue("");
-        else if (s.equals("My family"))
+        else if (privacy.equals("My family"))
             databaseReference.child(titles[i]).setValue("%f" + data[i]);
-        else if (s.equals("Everyone"))
+        else if (privacy.equals("Everyone"))
             databaseReference.child(titles[i]).setValue(data[i]);
-    }
-
-    public static String preperStringToDataBase(String s) {
-        int numOfDotsFound = 0;
-        for (int i = 0; i < s.length() - numOfDotsFound; i++) {
-            if (s.charAt(i) == '.') {
-                s = s.substring(0, i) + "*" + s.substring(i + 1);
-                numOfDotsFound++;
-                i--;
-            }
-        }
-        return s;
     }
 
     private void setDateListener() {
@@ -428,7 +428,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
     public void setMyUserName() {
         if (currentUser == null)
-            setCurrentUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            setCurrentUserToMyUser();
 
     }
 
@@ -471,7 +471,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(getString(R.string.public_usersDB));
         String mail = mAuth.getCurrentUser().getEmail();
-        myRef = myRef.child(preperStringToDataBase(mail)).child(getString(R.string.personal_dataDB));
+        myRef = myRef.child(prepareStringToDataBase(mail)).child(getString(R.string.personal_dataDB));
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -551,8 +551,6 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void setSelectionPrivacySpinnersPrivate(Spinner spinner, String spinnerSelection) {
-        final String[] selctionsOptions = getResources().getStringArray(R.array.privacyOptions);
-
         if (spinnerSelection.equals(""))
             spinner.setSelection(0);
         else if (spinnerSelection.substring(0, 2).equals("%f"))
@@ -595,7 +593,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference ref = db.getReference();
         ref = ref.child(getString(R.string.public_usersDB))
-                .child(preperStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                 .child(getString(R.string.personal_dataDB));
 
         ref.child("phone").setValue("%f" + profileData.getPhone());
@@ -738,7 +736,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 //    }
 
     private void onOffEditModePrivate() {
-        this.EDIT_MODE = !EDIT_MODE;
+        EDIT_MODE = !EDIT_MODE;
         refreshEditMode(!EDIT_MODE);
     }
 
@@ -925,7 +923,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Data-Base play
-                sendFatherRequestToKid(input.getText().toString());
+                sendFather_newKidRequest(input.getText().toString());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -938,7 +936,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         builder.show();
     }
 
-    public void sendFatherRequestToKid(String mail) {
+    public void sendFather_newKidRequest(String mail) {
         if (!allUsers.contains(mail)) {
             Toast.makeText(Profile.this,
                     "user doesn't exists",
@@ -947,7 +945,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                 .child(getString(R.string.public_usersDB))
-                .child(preperStringToDataBase(mail))
+                .child(prepareStringToDataBase(mail))
                 .child("fam")
                 .child("requests").push();
         ref.child("email")
@@ -980,7 +978,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
                 }
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                         .child(getString(R.string.public_usersDB))
-                        .child(preperStringToDataBase(input.getText().toString()))
+                        .child(prepareStringToDataBase(input.getText().toString()))
                         .child("fam")
                         .child("requests").push();
                 ref.child("email")

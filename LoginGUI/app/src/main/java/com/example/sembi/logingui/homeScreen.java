@@ -124,7 +124,7 @@ public class homeScreen extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -148,6 +148,7 @@ public class homeScreen extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }else if (id == R.id.action_new){
             return true;
@@ -175,6 +176,7 @@ public class homeScreen extends AppCompatActivity
             startActivity(new Intent(this, MedicalRecords.class));
         } else if (id == R.id.nav_events && id != currentId) {
 
+            startActivity(new Intent(this, MedicalRecords.class));
 //            inflate(R.layout.activity_event);
 //            currentId = id;
         } else if (id == R.id.nav_new_event && id != currentId) {

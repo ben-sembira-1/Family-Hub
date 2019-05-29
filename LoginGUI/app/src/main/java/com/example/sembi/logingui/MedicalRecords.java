@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,14 +17,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 
 public class MedicalRecords extends AppCompatActivity {
 
 
-    private FirebaseDatabase mDatabaseReference;
+    private FirebaseDatabase mDatabase;
     private ListView mMedicalRecordsList;
     private ArrayList<MedicalRecordModel> records;
     private MedicalRecordsListAdapter adapter;
@@ -32,11 +32,11 @@ public class MedicalRecords extends AppCompatActivity {
         setContentView(R.layout.activity_medical_records);
 
         //connecting the DB
-        mDatabaseReference = FirebaseDatabase.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
         //connecting the layout
         mMedicalRecordsList = findViewById(R.id.medicalRecordsListView);
 
-        DatabaseReference medicalRecordsReference = mDatabaseReference.getReference("MedicalRecords");
+        DatabaseReference medicalRecordsReference = mDatabase.getReference("MedicalRecords");
         String recordId = medicalRecordsReference.push().getKey();
         MedicalRecordModel medicalRecordModel = new MedicalRecordModel("Test", "Test1");
         medicalRecordsReference.child(recordId).setValue(medicalRecordModel);
@@ -61,7 +61,7 @@ public class MedicalRecords extends AppCompatActivity {
 //
 //            }
 //        });
-        DatabaseReference databaseReference = mDatabaseReference.getReference("MedicalRecords");
+        DatabaseReference databaseReference = mDatabase.getReference("MedicalRecords");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -93,5 +93,9 @@ public class MedicalRecords extends AppCompatActivity {
     public void homeClicked(View view) {
         Intent intent = new Intent(this, homeScreen.class);
         startActivity(intent);
+    }
+
+    public void newEvent(View view) {
+        startActivity(new Intent(this, Event.class));
     }
 }
