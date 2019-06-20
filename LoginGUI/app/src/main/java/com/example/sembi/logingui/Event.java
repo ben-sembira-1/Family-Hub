@@ -29,19 +29,14 @@ public class Event extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-        choiseButtons = new Button[3];
         setButtons();
-
-
         stateImageView = findViewById(R.id.comingStateImageV);
-
         refresh();
     }
 
     private void setButtons() {
+        choiseButtons = new Button[3];
         Button[] Buttons = {findViewById(R.id.yesComingButton), findViewById(R.id.notComingButton), findViewById(R.id.maybeComingButton)};
-
-
         arraycopy(Buttons, 0, choiseButtons, 0, Buttons.length);
     }
 

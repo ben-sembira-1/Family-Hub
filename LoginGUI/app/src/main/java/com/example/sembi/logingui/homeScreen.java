@@ -2,6 +2,8 @@ package com.example.sembi.logingui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +19,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,8 +31,48 @@ public class homeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
+    private static final long SMALL_ANIMATIONS_DURATION = 300;
+
     TextView navFullName, navNextEvent;
     ImageView navProfilePic;
+    Post newPost;
+
+    public void insertLink(View view) {
+        fadeView(
+                findViewById(R.id.newPost_linkPasteET)
+                , FADE.in
+        );
+    }
+
+    public void insertImage(View view) {
+        //TODO
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else if (findViewById(R.id.greyScreen).getAlpha() != 0) {
+
+            fadeView(
+                    findViewById(R.id.greyScreen)
+                    , FADE.out);
+            fadeView(
+                    findViewById(R.id.newPostContainer)
+                    , FADE.out);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    findViewById(R.id.newPostContainer).setVisibility(View.GONE);
+                }
+            }, SMALL_ANIMATIONS_DURATION / 2);
+
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     private static int currentId;
 
@@ -47,14 +88,6 @@ public class homeScreen extends AppCompatActivity
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                newPost();
-            }
-        });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -122,48 +155,6 @@ public class homeScreen extends AppCompatActivity
         //TODO
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }else if (id == R.id.action_new){
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-//    private void inflate(int layoutID) {
-//        LinearLayout ll = findViewById(R.id.stubLinearLayout);
-//        ll.removeAllViews();
-//        LayoutInflater LI = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        ll.addView(LI.inflate(layoutID, ll, false));
-//    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -173,7 +164,7 @@ public class homeScreen extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_members && id != currentId) {
-            startActivity(new Intent(this, MedicalRecords.class));
+            startActivity(new Intent(this, FamilyMembers.class));
         } else if (id == R.id.nav_events && id != currentId) {
 
             startActivity(new Intent(this, MedicalRecords.class));
@@ -206,10 +197,67 @@ public class homeScreen extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.home_screen, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        } else if (id == R.id.action_new) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+//    private void inflate(int layoutID) {
+//        LinearLayout ll = findViewById(R.id.stubLinearLayout);
+//        ll.removeAllViews();
+//        LayoutInflater LI = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        ll.addView(LI.inflate(layoutID, ll, false));
+//    }
+
+    public void newPost(View view) {
+        findViewById(R.id.greyScreen).animate().alpha(0.3f).setDuration(SMALL_ANIMATIONS_DURATION);
+        findViewById(R.id.newPostContainer).setAlpha(0.0f);
+        findViewById(R.id.newPostContainer).setVisibility(View.VISIBLE);
+        fadeView(
+                findViewById(R.id.newPostContainer)
+                , FADE.in);
+        //TODO: init all fields
+    }
+
     public void goToProfile(View view){
         Profile.EDIT_MODE = false;
         Intent intent = new Intent(this, Profile.class);
         startActivity(intent);
+    }
+
+    private void fadeView(View v, FADE fade) {
+        if (fade.equals(Fade.IN)) {
+            v.animate().alpha(1.0f).setDuration(SMALL_ANIMATIONS_DURATION);
+        } else if (fade.equals(FADE.out)) {
+            v.animate().alpha(0.0f).setDuration(SMALL_ANIMATIONS_DURATION / 2);
+        }
+
+    }
+
+
+    enum FADE {
+        in,
+        out
     }
 
 
