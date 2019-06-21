@@ -1,27 +1,28 @@
 package com.example.sembi.logingui;
 
-import java.util.Date;
-
-class Post {
+class PostReadyForDB {
     private String mPublisherStr;
     private String mContentStr;
-    private Date mPublishDate;
     private String mLinkStr;
+    private String mImagePathStr;
     //    private URL mPhotoURL;
 //    TODO: the path will be: "postImages/" + mPublisherStr + "(" + mPublishDate + ")"
 
-    public Post(String mPublisherStr, String mContentStr, Date mPublishDate, String mLinkStr) {
+    public PostReadyForDB(String mPublisherStr, String mContentStr, String mLinkStr, String mImagePathStr) {
         this.mPublisherStr = mPublisherStr;
         this.mContentStr = mContentStr;
-        this.mPublishDate = mPublishDate;
         this.mLinkStr = mLinkStr;
+        this.mImagePathStr = mImagePathStr;
     }
 
-    public Post() {
+    public PostReadyForDB(Post post) {
+        this.mContentStr = post.getmContentStr();
+        this.mLinkStr = post.getmLinkStr();
+        this.mPublisherStr = post.getmPublisherStr();
+        this.mImagePathStr = post.getmPublishDate().toString() + "%" + post.getmPublisherStr();
     }
 
-    public String getmImagePathStr() {
-        return getmPublishDate().toString() + "%" + getmPublisherStr();
+    public PostReadyForDB() {
     }
 
     public String getmPublisherStr() {
@@ -40,19 +41,19 @@ class Post {
         this.mContentStr = mContentStr;
     }
 
-    public Date getmPublishDate() {
-        return mPublishDate;
-    }
-
-    public void setmPublishDate(Date mPublishDate) {
-        this.mPublishDate = mPublishDate;
-    }
-
     public String getmLinkStr() {
         return mLinkStr;
     }
 
     public void setmLinkStr(String mLinkStr) {
         this.mLinkStr = mLinkStr;
+    }
+
+    public String getmImagePathStr() {
+        return mImagePathStr;
+    }
+
+    public void setmImagePathStr(String mImagePathStr) {
+        this.mImagePathStr = mImagePathStr;
     }
 }

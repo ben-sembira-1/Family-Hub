@@ -27,28 +27,25 @@
         android:layout_height="match_parent"
         android:layout_marginTop="60dp">
 
-
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/fui_ic_googleg_color_24dp" />
-
-        <ListView
-            android:id="@+id/homeScreenListView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/homeScreen_feedSwipeRefreshLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ListView
+                android:id="@+id/homeScreenListView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -82,7 +79,7 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:background="#E698B4B3"
-        android:visibility="">
+        android:visibility="gone">
 
         <TextView
 
@@ -151,6 +148,7 @@
             android:background="#4f4f4f"
             android:text="Post!"
             android:textColor="#ffffff"
+            android:onClick="createNewPost"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newPost_contentET"
@@ -172,14 +170,15 @@
             android:id="@+id/newPost_linkPreviewTV"
             style="@style/FirebaseUI.Text.Link"
             android:layout_width="250dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:autoLink="web"
-            android:gravity="end"
+            android:gravity="end|center_vertical"
             android:text="no link added"
             android:textSize="14sp"
+            android:onClick="followLink"
             app:layout_constraintBottom_toTopOf="@+id/newPost_contentET"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newPost_headerTV" />
@@ -189,9 +188,9 @@
             style="@style/Base.Widget.MaterialComponents.TextInputEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
-            android:alpha="0.0f"
+            android:alpha="0.0"
+            android:paddingEnd="100dp"
             android:background="#F5DBDB"
             android:ems="10"
             android:gravity="center"
@@ -201,6 +200,19 @@
             app:layout_constraintEnd_toEndOf="@+id/newPost_contentET"
             app:layout_constraintStart_toStartOf="@+id/newPost_contentET"
             app:layout_constraintTop_toTopOf="@+id/newPost_contentET" />
+
+        <Button
+            android:id="@+id/newPost_addLinkBtn"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:layout_margin="0dp"
+            android:alpha="0.0"
+            android:background="#CFB3B3"
+            android:onClick="addLink"
+            android:text="Add Link"
+            app:layout_constraintBottom_toBottomOf="@+id/newPost_linkPasteET"
+            app:layout_constraintEnd_toEndOf="@+id/newPost_linkPasteET"
+            app:layout_constraintTop_toTopOf="@+id/newPost_linkPasteET" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

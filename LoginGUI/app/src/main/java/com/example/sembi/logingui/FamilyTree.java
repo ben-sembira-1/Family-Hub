@@ -29,8 +29,6 @@ import java.util.LinkedList;
 
 public class FamilyTree extends AppCompatActivity {
 
-    private FamilyTreeNode god;
-
 
     //String familyTreeString;
     private String currentUser;

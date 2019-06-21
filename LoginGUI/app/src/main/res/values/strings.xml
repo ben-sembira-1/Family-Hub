@@ -93,6 +93,12 @@
     <string name="family_treeDB" translatable="false">familyTree</string>
     <string name="all_usersDB" translatable="false">allUsers</string>
     <string name="famDB" translatable="false">fam</string>
+    <string name="userFeedDB" translatable="false">feed</string>
+    <string name="userFeedDateDB" translatable="false">date</string>
+
+
+    //Storage titles
+    <string name="post_photos" translatable="false">postPhotos</string>
 
     //familyTree
     <string name="god_name" translatable="false">hod kdushato hacol yachol</string>
