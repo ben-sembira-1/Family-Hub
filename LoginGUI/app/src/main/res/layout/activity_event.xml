@@ -247,10 +247,10 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.bartoszlipinski.constraint.StaggeredAnimationGroup
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="pic, imageView2, EventNameTextV, hostHeaderTextV, dateDataTextV" />
+    <!--<com.bartoszlipinski.constraint.StaggeredAnimationGroup-->
+    <!--android:id="@+id/group"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:constraint_referenced_ids="pic, imageView2, EventNameTextV, hostHeaderTextV, dateDataTextV" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

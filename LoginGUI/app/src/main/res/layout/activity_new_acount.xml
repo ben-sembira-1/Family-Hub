@@ -11,14 +11,17 @@
 
     <TextView
         android:id="@+id/motivationTextV"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Header"
         android:gravity="center"
         android:padding="40dp"
         android:text="@string/newAcountMainText"
         android:textColor="@color/grey"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView4"
