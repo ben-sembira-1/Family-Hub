@@ -52,10 +52,9 @@
                 android:id="@+id/profile_imageView"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/NameTextV"
-                app:layout_constraintStart_toStartOf="@+id/tacleOfFieldsViewProfile"
+                app:layout_constraintStart_toStartOf="@+id/tableOfFieldsViewProfile"
                 app:layout_constraintTop_toTopOf="@+id/NameTextV"
                 app:srcCompat="@mipmap/no_profile_pic_round" />
 
@@ -63,12 +62,13 @@
                 android:id="@+id/NameTextV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="8dp"
                 android:inputType="textPersonName"
                 android:textSize="30sp"
+                android:gravity="center_vertical|start"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/editImageV_Button_"
                 app:layout_constraintStart_toEndOf="@+id/profile_imageView"
@@ -121,11 +121,12 @@
                 android:text="Add Child"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/button_text_size"
+                android:onClick="addKid"
                 app:layout_constraintBaseline_toBaselineOf="@+id/addParentBtn"
-                app:layout_constraintStart_toEndOf="@+id/addChildBtn2" />
+                app:layout_constraintStart_toEndOf="@+id/addPartnerBtn" />
 
             <Button
-                android:id="@+id/addChildBtn2"
+                android:id="@+id/addPartnerBtn"
 
                 android:layout_width="120dp"
                 android:layout_height="40dp"
@@ -134,6 +135,7 @@
                 android:text="Add Partner"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/button_text_size"
+                android:onClick="addPartner"
                 app:layout_constraintBaseline_toBaselineOf="@+id/addParentBtn"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -151,12 +153,12 @@
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/button_text_size"
                 app:layout_constraintBottom_toTopOf="@+id/profile_imageView"
-                app:layout_constraintEnd_toEndOf="@+id/tacleOfFieldsViewProfile"
+                app:layout_constraintEnd_toEndOf="@+id/tableOfFieldsViewProfile"
                 app:layout_constraintStart_toEndOf="@+id/addChildBtn"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:id="@+id/tacleOfFieldsViewProfile"
+                android:id="@+id/tableOfFieldsViewProfile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_vertical_margin"
@@ -446,8 +448,23 @@
                 android:layout_marginBottom="8dp"
                 android:onClick="onOffEditMode"
                 app:layout_constraintBottom_toBottomOf="@+id/NameTextV"
-                app:layout_constraintEnd_toEndOf="@+id/tacleOfFieldsViewProfile"
+                app:layout_constraintEnd_toEndOf="@+id/tableOfFieldsViewProfile"
                 app:layout_constraintTop_toTopOf="@+id/NameTextV"
+                app:srcCompat="@drawable/ic_mode_edit_off_24dp" />
+
+            <!--TODO setVisibility and functionality-->
+            <ImageView
+                android:id="@+id/replaceProfileImage_Button_"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#aaffffff"
+                android:onClick="onOffEditMode"
+                android:padding="20dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_imageView"
+                app:layout_constraintEnd_toEndOf="@+id/profile_imageView"
+                app:layout_constraintStart_toStartOf="@+id/profile_imageView"
+                app:layout_constraintTop_toTopOf="@+id/profile_imageView"
                 app:srcCompat="@drawable/ic_mode_edit_off_24dp" />
 
 

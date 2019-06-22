@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import static com.example.sembi.logingui.StaticMethods.prepareStringToDataBase;
+
 public class FamilyTree extends AppCompatActivity {
 
 
@@ -45,7 +47,7 @@ public class FamilyTree extends AppCompatActivity {
     private ArrayList<FamilyTreeNodeUIModel> brothersModelsList, partnersModelsList;
 
     public void setCurrentUser(String currentUser) {
-        this.currentUser = Profile.prepareStringToDataBase(currentUser);
+        this.currentUser = prepareStringToDataBase(currentUser);
     }
 
     @Override
@@ -127,7 +129,7 @@ public class FamilyTree extends AppCompatActivity {
 
     private void collectAllRecords(DataSnapshot dataSnapshot) {
         for (DataSnapshot currDS : dataSnapshot.child(currentUser).child("fam").child("kids").getChildren()) {
-            DataSnapshot currKid = dataSnapshot.child(Profile.prepareStringToDataBase(currDS.getValue(String.class)));
+            DataSnapshot currKid = dataSnapshot.child(prepareStringToDataBase(currDS.getValue(String.class)));
             String name = currKid.child(getString(R.string.personal_dataDB))
                     .child("name")
                     .getValue(String.class);
@@ -205,7 +207,7 @@ public class FamilyTree extends AppCompatActivity {
     }
 
     public void goHome(View view) {
-        startActivity(new Intent(this, homeScreen.class));
+        startActivity(new Intent(this, HomeScreen.class));
     }
 
 

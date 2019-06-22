@@ -91,7 +91,7 @@ public class MedicalRecords extends AppCompatActivity {
     }
 
     public void homeClicked(View view) {
-        Intent intent = new Intent(this, homeScreen.class);
+        Intent intent = new Intent(this, HomeScreen.class);
         startActivity(intent);
     }
 

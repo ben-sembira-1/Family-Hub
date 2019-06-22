@@ -32,7 +32,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +45,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
-public class homeScreen extends AppCompatActivity
+import static com.example.sembi.logingui.StaticMethods.DAYS;
+import static com.example.sembi.logingui.StaticMethods.MONTHS;
+import static com.example.sembi.logingui.StaticMethods.getFamilyMembers;
+import static com.example.sembi.logingui.StaticMethods.prepareStringToDataBase;
+
+public class HomeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -79,6 +83,14 @@ public class homeScreen extends AppCompatActivity
 
         currentId = -1;
 
+        weeksToShowStrings = new LinkedList<>();
+        weeksToShowRefs = new LinkedList<>();
+        allWeeks = new LinkedList<>();
+
+        mDatabase = FirebaseDatabase.getInstance();
+
+        mFeedPostsList = findViewById(R.id.homeScreenListView);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -99,6 +111,42 @@ public class homeScreen extends AppCompatActivity
 
         setNav();
 
+        mFeedPostsList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                if (totalItemCount - (firstVisibleItem + visibleItemCount) == 0) {
+//                    int i = weeksToShowStrings.size();
+//                    if (i == allWeeks.size())
+//                        return;
+//                    weeksToShowStrings = new LinkedList<>();
+//                    for (int j = 0; j <= i; j++) {
+//                        weeksToShowStrings.add(allWeeks.get(j));
+//                    }
+//                }
+//                setFeed();
+            }
+        });
+
+        DatabaseReference myFeedRef = mDatabase.getReference().child(getString(R.string.public_usersDB)).child(prepareStringToDataBase(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                .child(getString(R.string.userFeedDB));
+
+        myFeedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                collectAllWeeks(dataSnapshot);
+                setFeed();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         final SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.homeScreen_feedSwipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -108,28 +156,6 @@ public class homeScreen extends AppCompatActivity
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-        mFeedPostsList.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (totalItemCount - (firstVisibleItem + visibleItemCount) == 0) {
-                    int i = weeksToShowStrings.size();
-                    if (i == allWeeks.size())
-                        return;
-                    weeksToShowStrings = new LinkedList<>();
-                    for (int j = 0; j <= i; j++) {
-                        weeksToShowStrings.add(allWeeks.get(j));
-                    }
-                }
-            }
-        });
-
-        setFeed();
     }
 
     private void setFeed() {
@@ -142,9 +168,9 @@ public class homeScreen extends AppCompatActivity
         Calendar c = Calendar.getInstance();
 
         weeksToShowRefs = new LinkedList<>();
-        for (String week : weeksToShowStrings) {
+        for (String week : allWeeks) {
             weeksToShowRefs.add(
-                    mDatabase.getReference().child(getString(R.string.public_usersDB)).child(Profile.prepareStringToDataBase(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                    mDatabase.getReference().child(getString(R.string.public_usersDB)).child(prepareStringToDataBase(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
                             .child(getString(R.string.userFeedDB))
                             .child(week)
             );
@@ -157,29 +183,12 @@ public class homeScreen extends AppCompatActivity
         mFeedPostsList.setAdapter(adapter);
 
         for (DatabaseReference ref : weeksToShowRefs) {
-            ref.addChildEventListener(new ChildEventListener() {
+            ref.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    collectAllRecords(dataSnapshot);
-                    adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    collectAllRecords(dataSnapshot);
-                    adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    collectAllRecords(dataSnapshot);
-                    adapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    collectAllRecords(dataSnapshot);
-                    adapter.notifyDataSetChanged();
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (collectAllRecords(dataSnapshot))
+                        adapter.notifyDataSetChanged(); //TODO add in settings: auto update (like this)
+                    //TODO or update with pullToRefresh (move this to pullToRefresh listener)
                 }
 
                 @Override
@@ -189,35 +198,7 @@ public class homeScreen extends AppCompatActivity
             });
         }
 
-        DatabaseReference myFeedRef = mDatabase.getReference().child(getString(R.string.public_usersDB)).child(Profile.prepareStringToDataBase(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
-                .child(getString(R.string.userFeedDB));
 
-        myFeedRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                collectAllWeeks(dataSnapshot);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                collectAllWeeks(dataSnapshot);
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                collectAllWeeks(dataSnapshot);
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                collectAllWeeks(dataSnapshot);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void collectAllWeeks(DataSnapshot dataSnapshot) {
@@ -230,25 +211,29 @@ public class homeScreen extends AppCompatActivity
             public int compare(String o1, String o2) {
                 int[] iArr1 = getWeekArr(o1), iArr2 = getWeekArr(o2);
                 if (iArr1[0] != iArr2[0])
-                    return iArr1[0] - iArr2[0];
+                    return iArr2[0] - iArr1[0];
 
                 if (iArr1[1] != iArr2[1])
-                    return iArr1[1] - iArr2[1];
+                    return iArr2[1] - iArr1[1];
 
                 if (iArr1[2] != iArr2[2])
-                    return iArr1[2] - iArr2[2];
+                    return iArr2[2] - iArr1[2];
 
                 return 0;
             }
         });
     }
 
-    private void collectAllRecords(DataSnapshot dataSnapshot) {
+    private Boolean collectAllRecords(DataSnapshot dataSnapshot) {
         for (DataSnapshot entry : dataSnapshot.getChildren()) {
 
             String mPublisherStr = entry.child("mPublisherStr").getValue(String.class);
             String mContentStr = entry.child("mContentStr").getValue(String.class);
-            DateReadyForDB dateReadyForDB = entry.child(getString(R.string.userFeedDateDB)).getValue(DateReadyForDB.class);
+            DateReadyForDB dateReadyForDB = entry
+                    .child(getString(R.string.userFeedDateDB))
+                    .getValue(DateReadyForDB.class);
+            if (dateReadyForDB == null)
+                return false;
             String mLinkStr = entry.child("mLinkStr").getValue(String.class);
 
             Calendar c = Calendar.getInstance();
@@ -283,10 +268,11 @@ public class homeScreen extends AppCompatActivity
 //                if (c1.get(Calendar.MILLISECOND) != c2.get(Calendar.MILLISECOND))
 //                    return c1.get(Calendar.MILLISECOND) - c2.get(Calendar.MILLISECOND);
 
-                return c1.compareTo(c2);
+                return -1 * c1.compareTo(c2);
             }
         });
 
+        return true;
     }
 
     private int[] getWeekArr(String week) {
@@ -322,6 +308,20 @@ public class homeScreen extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (findViewById(R.id.newPost_linkPasteET).getAlpha() != 0.0f) {
+
+            fadeOutLinkBox();
+
+        } else if (findViewById(R.id.greyScreen).getAlpha() != 0) {
+
+            fadeOutNewPostBox();
+
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void fadeOutLinkBox() {
+        if (findViewById(R.id.newPost_linkPasteET).getAlpha() != 0.0f) {
             Animation a1 = findViewById(R.id.newPost_linkPasteET).getAnimation(),
                     a2 = findViewById(R.id.newPost_addLinkBtn).getAnimation();
 
@@ -339,7 +339,11 @@ public class homeScreen extends AppCompatActivity
                     , FADE.out
             );
 
-        } else if (findViewById(R.id.greyScreen).getAlpha() != 0) {
+        }
+    }
+
+    private void fadeOutNewPostBox() {
+        if (findViewById(R.id.greyScreen).getAlpha() != 0) {
 
             fadeView(
                     findViewById(R.id.greyScreen)
@@ -354,9 +358,6 @@ public class homeScreen extends AppCompatActivity
                     findViewById(R.id.newPostContainer).setVisibility(View.GONE);
                 }
             }, SMALL_ANIMATIONS_DURATION / 2);
-
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -456,6 +457,7 @@ public class homeScreen extends AppCompatActivity
     public void goToProfile(View view) {
         Profile.EDIT_MODE = false;
         Intent intent = new Intent(this, Profile.class);
+        intent.putExtra(getString(R.string.profile_extra_mail_tag), FirebaseAuth.getInstance().getCurrentUser().getEmail());
         startActivity(intent);
     }
 
@@ -509,12 +511,17 @@ public class homeScreen extends AppCompatActivity
                         ((EditText) findViewById(R.id.newPost_linkPasteET))
                                 .getText().toString()
                 );
+
+        fadeOutLinkBox();
     }
+
 
     public void followLink(View view) {
         if (!(view instanceof TextView))
             return;
         String link = ((TextView) view).getText().toString();
+        if (link == null || link.length() == 0)
+            return;
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(link));
         startActivity(intent);
@@ -535,8 +542,8 @@ public class homeScreen extends AppCompatActivity
         c.setTime(newPost.getmPublishDate());
 
 
-        for (String mail : StaticMethods.getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-            DatabaseReference auxRef = databasePublicUsersReference.child(Profile.prepareStringToDataBase(mail)).child(getString(R.string.userFeedDB))
+        for (String mail : getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+            DatabaseReference auxRef = databasePublicUsersReference.child(prepareStringToDataBase(mail)).child(getString(R.string.userFeedDB))
                     .child(dateReadyForDB.getYear() + "," + dateReadyForDB.getMonth() + "," + dateReadyForDB.getWeek()).child(dateReadyForDB.toString());
             auxRef.setValue(postReadyForDB);
             auxRef.child("date").setValue(dateReadyForDB);
@@ -545,6 +552,7 @@ public class homeScreen extends AppCompatActivity
         FirebaseStorage.getInstance().getReference().child(getString(R.string.post_photos)).child(dateReadyForDB + "%" + newPost.getmPublisherStr())
                 .putFile(newPostImagePath);
 
+        fadeOutNewPostBox();
     }
 
     private enum FADE {
@@ -592,7 +600,7 @@ public class homeScreen extends AppCompatActivity
             Calendar c = Calendar.getInstance();
             c.setTime(current.getmPublishDate());
 
-            date.setText(StaticMethods.DAYS[c.get(Calendar.DAY_OF_WEEK)] + ", " + StaticMethods.MONTHS[c.get(Calendar.MONTH)] + " " + c.get(Calendar.DAY_OF_MONTH) + ", " + c.get(Calendar.YEAR));
+            date.setText(DAYS[c.get(Calendar.DAY_OF_WEEK)] + ", " + MONTHS[c.get(Calendar.MONTH)] + " " + c.get(Calendar.DAY_OF_MONTH) + ", " + c.get(Calendar.YEAR));
             if (content.getLineCount() > 5)
                 reedMore.setVisibility(View.VISIBLE);
 

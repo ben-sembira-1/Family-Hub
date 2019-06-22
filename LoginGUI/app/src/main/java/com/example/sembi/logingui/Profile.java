@@ -13,7 +13,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -37,11 +37,23 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.LinkedList;
 
-public class Profile extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+import static com.example.sembi.logingui.StaticMethods.ADDRESS_INDEX;
+import static com.example.sembi.logingui.StaticMethods.ADD_KID_INDEX;
+import static com.example.sembi.logingui.StaticMethods.ADD_PARENT_INDEX;
+import static com.example.sembi.logingui.StaticMethods.ADD_PARTNER_INDEX;
+import static com.example.sembi.logingui.StaticMethods.BDAY_INDEX;
+import static com.example.sembi.logingui.StaticMethods.CITY_INDEX;
+import static com.example.sembi.logingui.StaticMethods.EMAIL_INDEX;
+import static com.example.sembi.logingui.StaticMethods.NAME_INDEX;
+import static com.example.sembi.logingui.StaticMethods.PHONE_INDEX;
+import static com.example.sembi.logingui.StaticMethods.prepareStringToDataBase;
+
+public class Profile extends AppCompatActivity {
 
     //Set TV & ET array length to thr NUMBER_OF_PARAMETERS
     final static int NUMBER_OF_PARAMETERS = 6;
-    //0-Name,1-Phone,2-Email,3-Bday,4-City,5-Adress
+
+
     TextView[] TextDataArray;
     EditText[] EditTextDataArray;
 
@@ -54,66 +66,63 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     //Flag - if true, will set EDIT_MODE to false
     private static boolean secondTime = true;
 
+    LinkedList<String> requestSentTo;
     //Set what user to show
-    private static String currentUser;
+    private String currentUser;
 
     String[] publicData;
     Button[] RequestButtonsArray;
 
 
-    //date dialog
-//    private static final String TAG = "MainActivity";
-//    private DatePickerDialog.OnDateSetListener mDateSetListener;
-
-    //probably canceling the medical button ---->
-    //Button medicIDBtn;
-    //ImageView goToMedicBtn;
     ImageView goToHomeBtn;
     ImageView editIcon;
     FirebaseAuth mAuth;
     LinkedList<String> allUsers;
     LinkedList<DataSnapshot> allRequests;
     LinkedList<DataSnapshot> allPermissions;
+    private boolean shownUsrIsCurrentUsr;
     Spinner phoneSpinner, emailSpinner, bdaySpinner, citySpinner, addressSpinner;
     private ProfileModel profileData;
     //for adding media
     private StorageReference mStorageRef;
     private Class nextClass;
 
-    public static String getCurrentUser() {
-        return currentUser;
+    private void setCurrentUserToMyUser() {
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
-    public static void setCurrentUser(String currentUserNameUid) {
-        currentUser = currentUserNameUid;
-    }
-
-    public static void setCurrentUserToMyUser() {
-        Profile.setCurrentUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
-    }
-
-    public static String prepareStringToDataBase(String s) {
-        int numOfDotsFound = 0;
-        for (int i = 0; i < s.length() - numOfDotsFound; i++) {
-            if (s.charAt(i) == '.') {
-                s = s.substring(0, i) + "*" + s.substring(i + 1);
-                numOfDotsFound++;
-                i--;
-            }
-        }
-        return s;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        publicData = new String[5];
+        String usrToShow; //get from putExtra
+        Intent intent = getIntent();
+        usrToShow = intent.getExtras().getString("USER_MAIL");
+
+        if (usrToShow != null
+                && prepareStringToDataBase(usrToShow).equals(
+                prepareStringToDataBase(
+                        FirebaseAuth.getInstance().getCurrentUser().getEmail()
+                )
+        )
+        ) {
+            setCurrentUserToMyUser();
+            shownUsrIsCurrentUsr = true;
+        } else {
+            currentUser = usrToShow;
+            shownUsrIsCurrentUsr = false;
+        }
+
+
+        publicData = new String[NUMBER_OF_PARAMETERS];
         setSpinners();
 
-        allUsers = new LinkedList<String>();
-        allRequests = new LinkedList<DataSnapshot>();
+        //for safety
+        allUsers = new LinkedList<>();
+        allRequests = new LinkedList<>();
+        requestSentTo = new LinkedList<>();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -125,22 +134,16 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         FirebaseStorage storage = FirebaseStorage.getInstance();
         mStorageRef = storage.getReference();
 
-
         editIcon = findViewById(R.id.editImageV_Button_);
+        if (!shownUsrIsCurrentUsr) {
+            editIcon.setVisibility(View.GONE);
+        }
 
-
-        //TODO:
-        //firstTime = isFirstTime();
-
-        //probably canceling the medical button ---->
-        //medicIDBtn = findViewById(R.id.medicalIDBtn);
-        //probably canceling the medical button ---->
-        //goToMedicBtn = findViewById(R.id.moveOnButton);
         goToHomeBtn = findViewById(R.id.backHomeBtn);
 
         TextDataArray = new TextView[NUMBER_OF_PARAMETERS];
         EditTextDataArray = new EditText[NUMBER_OF_PARAMETERS];
-        RequestButtonsArray = new Button[2];
+        RequestButtonsArray = new Button[3];
         //initialize =>
         setRequestButtonsArray();
         setTextDataArrray();
@@ -154,9 +157,27 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         setDateListener();
         setRequestsListener();
         setPermissionsListener();
+
+        setTopButtons();
+    }
+
+    private void setTopButtons() {
+        if (shownUsrIsCurrentUsr)
+            return;
+        RequestButtonsArray[ADD_KID_INDEX].setText("Add as a\nkid");
+        RequestButtonsArray[ADD_PARENT_INDEX].setText("Add as a\nparent");
+        RequestButtonsArray[ADD_PARTNER_INDEX].setText("Add as a\npartner");
+
+        if (StaticMethods.getFamilyMembers(mAuth.getCurrentUser().getEmail()).contains(currentUser)) {
+            for (Button b : RequestButtonsArray)
+                b.setVisibility(View.GONE);
+        }
     }
 
     private void setRequestsListener() {
+        if (!shownUsrIsCurrentUsr)
+            return;
+
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference().child(getString(R.string.public_usersDB))
                 .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
@@ -201,7 +222,9 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
             builder.setNeutralButton("Show Profile", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    //TODO goto profile.
+                    Intent intent = new Intent(Profile.this, Profile.class);
+                    intent.putExtra(getString(R.string.profile_extra_mail_tag), email);
+                    startActivity(intent);
                 }
             });
 
@@ -227,7 +250,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
                         ref.child("connection")
                                 .setValue("kid");
 
-                        DatabaseReference newMember =  FirebaseDatabase.getInstance().getReference()
+                        DatabaseReference newMember = FirebaseDatabase.getInstance().getReference()
                                 .child(getString(R.string.public_usersDB))
                                 .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                                 .child("fam")
@@ -235,15 +258,26 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
                         newMember.child(email);
 
-                    }else {
+                    } else if (connection.equals("kid")) {
                         ref.child("connection")
                                 .setValue("parent");
 
-                        DatabaseReference newMember =  FirebaseDatabase.getInstance().getReference()
+                        DatabaseReference newMember = FirebaseDatabase.getInstance().getReference()
                                 .child(getString(R.string.public_usersDB))
                                 .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                                 .child("fam")
                                 .child("kids").push();
+
+                        newMember.setValue(email);
+                    } else {
+                        ref.child("connection")
+                                .setValue("partner");
+
+                        DatabaseReference newMember = FirebaseDatabase.getInstance().getReference()
+                                .child(getString(R.string.public_usersDB))
+                                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                                .child("fam")
+                                .child("partner");
 
                         newMember.setValue(email);
                     }
@@ -276,6 +310,9 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void setPermissionsListener() {
+        if (!shownUsrIsCurrentUsr)
+            return;
+
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference myRef = db.getReference().child(getString(R.string.public_usersDB))
                 .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
@@ -326,6 +363,14 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         bdaySpinner = findViewById(R.id.bdaySpinner);
         citySpinner = findViewById(R.id.citySpinner);
         addressSpinner = findViewById(R.id.addressSpinner);
+        if (!shownUsrIsCurrentUsr) {
+            phoneSpinner.setVisibility(View.GONE);
+            emailSpinner.setVisibility(View.GONE);
+            bdaySpinner.setVisibility(View.GONE);
+            citySpinner.setVisibility(View.GONE);
+            addressSpinner.setVisibility(View.GONE);
+            return;
+        }
         setSpinner(phoneSpinner);
         setSpinner(emailSpinner);
         setSpinner(bdaySpinner);
@@ -362,12 +407,20 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
                                 .child("parents").push();
 
                         newMember.setValue(email);
-                    } else {
+                    } else if (connection.equals("kid")) {
                         DatabaseReference newMember = FirebaseDatabase.getInstance().getReference()
                                 .child(getString(R.string.public_usersDB))
                                 .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
                                 .child("fam")
                                 .child("kids").push();
+
+                        newMember.setValue(email);
+                    } else {
+                        DatabaseReference newMember = FirebaseDatabase.getInstance().getReference()
+                                .child(getString(R.string.public_usersDB))
+                                .child(prepareStringToDataBase(mAuth.getCurrentUser().getEmail()))
+                                .child("fam")
+                                .child("partner"); //TODO add date to know who's the current partner
 
                         newMember.setValue(email);
                     }
@@ -382,8 +435,8 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
     private void setPrivacy(int i, String privacy) {
 
-        String[] titles = {"name", "phone", "email", "date", "city", "adress"};
-        String[] data = {profileData.getName(), profileData.getPhone(), profileData.getEmail(), profileData.getDate(), profileData.getCity(), profileData.getAddress()};
+        String[] titles = {"phone", "email", "date", "city", "adress", "name"};
+        String[] data = {profileData.getPhone(), profileData.getEmail(), profileData.getDate(), profileData.getCity(), profileData.getAddress(), profileData.getName()};
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference();
@@ -433,11 +486,15 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void setDataUpdaterFromDataBase() {
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
-        myRef = myRef.child(currentUser).child("personalData");
-
+        if (!shownUsrIsCurrentUsr) {
+            //a different user
+            return;
+        }
+        FirebaseDatabase databaseRef = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = databaseRef
+                .getReference("users")
+                .child(currentUser)
+                .child("personalData");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -455,6 +512,7 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
 
     }
 
+    //will work only if shownUsrIsCurrentUsr == true
     private void setDataUpdaterFromDataBase(DataSnapshot dataSnapshot) {
         profileData.setName(dataSnapshot.getValue(ProfileModel.class).getName());
         profileData.setAddress(dataSnapshot.getValue(ProfileModel.class).getAddress());
@@ -462,15 +520,18 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         profileData.setDate(dataSnapshot.getValue(ProfileModel.class).getDate());
         profileData.setEmail(dataSnapshot.getValue(ProfileModel.class).getEmail());
         profileData.setPhone(dataSnapshot.getValue(ProfileModel.class).getPhone());
-
         refreshFromDataUpdater();
     }
 
     private void setPublicDataUpdaterFromDataBase() {
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(getString(R.string.public_usersDB));
-        String mail = mAuth.getCurrentUser().getEmail();
+        String mail = currentUser;
+
+        if (shownUsrIsCurrentUsr)
+            mail = mAuth.getCurrentUser().getEmail();
+
         myRef = myRef.child(prepareStringToDataBase(mail)).child(getString(R.string.personal_dataDB));
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -488,14 +549,39 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         });
 
 
+        FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.public_usersDB))
+                .child(prepareStringToDataBase(mail))
+                .child("fam").child("requestsSentTo").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                setRequestsSentToListFromDataBase(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void setRequestsSentToListFromDataBase(DataSnapshot dataSnapshot) {
+        requestSentTo = new LinkedList<>();
+        for (DataSnapshot db : dataSnapshot.getChildren()) {
+            requestSentTo.add(db.getValue().toString());
+        }
     }
 
     private void setPublicDataUpdaterFromDataBase(DataSnapshot dataSnapshot) {
-        publicData[0] = dataSnapshot.getValue(ProfileModel.class).getPhone();
-        publicData[1] = dataSnapshot.getValue(ProfileModel.class).getEmail();
-        publicData[2] = dataSnapshot.getValue(ProfileModel.class).getDate();
-        publicData[3] = dataSnapshot.getValue(ProfileModel.class).getCity();
-        publicData[4] = dataSnapshot.getValue(ProfileModel.class).getAddress();
+        publicData[PHONE_INDEX] = dataSnapshot.getValue(ProfileModel.class).getPhone();
+        publicData[EMAIL_INDEX] = dataSnapshot.getValue(ProfileModel.class).getEmail();
+        publicData[BDAY_INDEX] = dataSnapshot.getValue(ProfileModel.class).getDate();
+        publicData[CITY_INDEX] = dataSnapshot.getValue(ProfileModel.class).getCity();
+        publicData[ADDRESS_INDEX] = dataSnapshot.getValue(ProfileModel.class).getAddress();
+        publicData[NAME_INDEX] = dataSnapshot.getValue(ProfileModel.class).getName();
+
+        saveChangesInTextViews();
 
         setPrivacySpinners();
     }
@@ -516,12 +602,12 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     private void savePrivacyInDatabase() {
         final String[] selectionsOptions = getResources().getStringArray(R.array.privacyOptions);
 
-        setPrivacy(0, selectionsOptions[2]);
-        setPrivacy(1, phoneSpinner.getSelectedItem().toString());
-        setPrivacy(2, emailSpinner.getSelectedItem().toString());
-        setPrivacy(3, bdaySpinner.getSelectedItem().toString());
-        setPrivacy(4, citySpinner.getSelectedItem().toString());
-        setPrivacy(5, addressSpinner.getSelectedItem().toString());
+        setPrivacy(NAME_INDEX, selectionsOptions[2]);
+        setPrivacy(PHONE_INDEX, phoneSpinner.getSelectedItem().toString());
+        setPrivacy(EMAIL_INDEX, emailSpinner.getSelectedItem().toString());
+        setPrivacy(BDAY_INDEX, bdaySpinner.getSelectedItem().toString());
+        setPrivacy(CITY_INDEX, citySpinner.getSelectedItem().toString());
+        setPrivacy(ADDRESS_INDEX, addressSpinner.getSelectedItem().toString());
     }
 
     private void refreshEditMode(boolean hasChangedData) {
@@ -539,14 +625,19 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void setPrivacySpinners() {
-//        FirebaseDatabase db = FirebaseDatabase.getInstance();
-//        DatabaseReference ref = db.getReference().child(getString(R.string.public_usersDB))
-//                .child(mAuth.getCurrentUser().getEmail()).child(getString(R.string.personal_dataDB));
-        setSelectionPrivacySpinnersPrivate(phoneSpinner, publicData[0]);
-        setSelectionPrivacySpinnersPrivate(emailSpinner, publicData[1]);
-        setSelectionPrivacySpinnersPrivate(bdaySpinner, publicData[2]);
-        setSelectionPrivacySpinnersPrivate(citySpinner, publicData[3]);
-        setSelectionPrivacySpinnersPrivate(addressSpinner, publicData[4]);
+        if (shownUsrIsCurrentUsr) {
+            setSelectionPrivacySpinnersPrivate(phoneSpinner, publicData[0]);
+            setSelectionPrivacySpinnersPrivate(emailSpinner, publicData[1]);
+            setSelectionPrivacySpinnersPrivate(bdaySpinner, publicData[2]);
+            setSelectionPrivacySpinnersPrivate(citySpinner, publicData[3]);
+            setSelectionPrivacySpinnersPrivate(addressSpinner, publicData[4]);
+        } else {
+            phoneSpinner.setVisibility(View.GONE);
+            emailSpinner.setVisibility(View.GONE);
+            bdaySpinner.setVisibility(View.GONE);
+            citySpinner.setVisibility(View.GONE);
+            addressSpinner.setVisibility(View.GONE);
+        }
 
     }
 
@@ -644,12 +735,21 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void saveChangesInTextViews() {
-        TextDataArray[0].setText(profileData.getName());
-        TextDataArray[1].setText(profileData.getPhone());
-        TextDataArray[2].setText(profileData.getEmail());
-        TextDataArray[3].setText(profileData.getDate());
-        TextDataArray[4].setText(profileData.getCity());
-        TextDataArray[5].setText(profileData.getAddress());
+        if (!shownUsrIsCurrentUsr) {
+            TextDataArray[NAME_INDEX].setText(getPublicField(NAME_INDEX));
+            TextDataArray[PHONE_INDEX].setText(getPublicField(PHONE_INDEX));
+            TextDataArray[EMAIL_INDEX].setText(getPublicField(EMAIL_INDEX));
+            TextDataArray[BDAY_INDEX].setText(getPublicField(BDAY_INDEX));
+            TextDataArray[CITY_INDEX].setText(getPublicField(CITY_INDEX));
+            TextDataArray[ADDRESS_INDEX].setText(getPublicField(ADDRESS_INDEX));
+            return;
+        }
+        TextDataArray[NAME_INDEX].setText(profileData.getName());
+        TextDataArray[PHONE_INDEX].setText(profileData.getPhone());
+        TextDataArray[EMAIL_INDEX].setText(profileData.getEmail());
+        TextDataArray[BDAY_INDEX].setText(profileData.getDate());
+        TextDataArray[CITY_INDEX].setText(profileData.getCity());
+        TextDataArray[ADDRESS_INDEX].setText(profileData.getAddress());
     }
 
     private void saveChangesInDataBase() {
@@ -701,12 +801,12 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void setTextDataArrray() {
-        TextView[] TV_id_s = {findViewById(R.id.NameTextV),
-                findViewById(R.id.PhoneTextV),
+        TextView[] TV_id_s = {findViewById(R.id.PhoneTextV),
                 findViewById(R.id.EmailTextV),
                 findViewById(R.id.BdayTextV),
                 findViewById(R.id.cityTextV),
-                findViewById(R.id.AdressTextV)};
+                findViewById(R.id.AdressTextV),
+                findViewById(R.id.NameTextV)};
 
         for (int i = 0; i < NUMBER_OF_PARAMETERS; i++) {
             TextDataArray[i] = TV_id_s[i];
@@ -714,9 +814,12 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     private void setRequestButtonsArray() {
-        Button[] B_id_s = {
-                findViewById(R.id.addChildBtn),
-                findViewById(R.id.addParentBtn)};
+        Button[] B_id_s =
+                {
+                        findViewById(R.id.addChildBtn),
+                        findViewById(R.id.addParentBtn),
+                        findViewById(R.id.addPartnerBtn) //TODO add functionality
+                };
 
         for (int i = 0; i < B_id_s.length; i++) {
             RequestButtonsArray[i] = B_id_s[i];
@@ -724,6 +827,8 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     public void onOffEditMode(View view) {
+        if (!shownUsrIsCurrentUsr)
+            return;
         onOffEditModePrivate();
     }
 
@@ -740,16 +845,10 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         refreshEditMode(!EDIT_MODE);
     }
 
-    public void goToMedicalAtempt(View view) {
-        nextClass = MedicalRecords.class;
-        if (!allFieldsCompleted())
-            createEmptyFieldsDialog();
-        else
-            viBtnMoveOn(nextClass);
-
-    }
-
     private void viBtnMoveOn(Class s) {
+        if (!shownUsrIsCurrentUsr)
+            goTo(s);
+
         setDefaultName();
         if (EDIT_MODE)
             onOffEditModePrivate();
@@ -812,8 +911,8 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     public void goToHomeAttempt(View view) {
-        nextClass = homeScreen.class;
-        if (!allFieldsCompleted())
+        nextClass = HomeScreen.class;
+        if (shownUsrIsCurrentUsr && !allFieldsCompleted())
             createEmptyFieldsDialog();
         else
             viBtnMoveOn(nextClass);
@@ -837,13 +936,32 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         startActivity(intent);
     }
 
-    //functionality:
+    private String getPublicField(int index) {
+        if (index < 0 || index >= NUMBER_OF_PARAMETERS)
+            return null;
+        if (publicData[index] == null
+                || publicData[index].length() == 0
+                || (!shownUsrIsCurrentUsr && publicData[index].startsWith("%f") && !StaticMethods.getFamilyMembers(currentUser).contains(mAuth.getCurrentUser().getEmail()))
+        ) {
+            return "";
+        }
 
+        if (publicData[index].startsWith("%f"))
+            return publicData[index].substring(2);
+
+        return publicData[index];
+    }
+
+    //functionality:
     public void sendEmail(View view) {
+
         if (EDIT_MODE)
             return;
+
+        String mail = TextDataArray[EMAIL_INDEX].getText().toString();
+
         Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
-        mailIntent.setType("*/*").setData(Uri.parse("mailto:" + profileData.getEmail()))
+        mailIntent.setType("*/*").setData(Uri.parse("mailto:" + mail))
                 .putExtra(Intent.EXTRA_SUBJECT, "subject");
         if (mailIntent.resolveActivity(getPackageManager()) != null)
             startActivity(mailIntent);
@@ -852,7 +970,8 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     public void call(View view) {
         if (EDIT_MODE)
             return;
-        String phoneNumber = TextDataArray[1].getText().toString();
+
+        String phoneNumber = TextDataArray[PHONE_INDEX].getText().toString();
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         final int REQUEST_PHONE_CALL = 1;
         callIntent.setData(Uri.parse("tel:" + phoneNumber));//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -872,10 +991,17 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         if (EDIT_MODE)
             return;
 
-        String city = setStringsCompatibleWithUri(profileData.getCity()),
-                address = setStringsCompatibleWithUri(profileData.getAddress());
+        String city = TextDataArray[CITY_INDEX].getText().toString(),
+                address = TextDataArray[ADDRESS_INDEX].getText().toString();
 
-        if (address.length() != 0)
+        if (city.length() == 0 && address.length() == 0) {
+            return;
+        }
+
+        city = setStringsCompatibleWithUri(city);
+        address = setStringsCompatibleWithUri(address);
+
+        if (address.length() != 0 && city.length() != 0)
             address = "+" + address;
 
         Uri geoLocation = Uri.parse("geo:0,0?q=" + city + address);
@@ -909,6 +1035,13 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     }
 
     public void addParent(View view) {
+        if (!shownUsrIsCurrentUsr) {
+
+            sendFather_newKidRequest(currentUser);
+
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Fill in your fathers Email:");
 
@@ -939,10 +1072,18 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
     public void sendFather_newKidRequest(String mail) {
         if (!allUsers.contains(mail)) {
             Toast.makeText(Profile.this,
-                    "user doesn't exists",
+                    "User doesn't exists",
                     Toast.LENGTH_LONG).show();
             return;
         }
+
+        if (requestSentTo.contains(mail)) {
+            Toast.makeText(Profile.this,
+                    "User already has a pending request.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                 .child(getString(R.string.public_usersDB))
                 .child(prepareStringToDataBase(mail))
@@ -954,37 +1095,35 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
                 .setValue("kid");
         ref.child("name")
                 .setValue(profileData.getName());
+
+        FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.public_usersDB))
+                .child(prepareStringToDataBase(mail))
+                .child("fam").child("requestsSentTo")
+                .push().setValue(mail);
     }
 
     public void addKid(View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Fill in your parent Email:");
+        if (!shownUsrIsCurrentUsr) {
+            sendKid_newParentRequest(currentUser);
+            return;
+        }
 
-// Set up the input
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Fill in your kids Email:");
+
+        // Set up the input
         final EditText input = new EditText(this);
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        // Specifies the type of input expected; this, sets the input as a text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-// Set up the buttons
+        // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (!allUsers.contains(input.getText().toString())) {
-                    Toast.makeText(Profile.this,
-                            "user doesn't exists",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
-                        .child(getString(R.string.public_usersDB))
-                        .child(prepareStringToDataBase(input.getText().toString()))
-                        .child("fam")
-                        .child("requests").push();
-                ref.child("email")
-                        .setValue(mAuth.getCurrentUser().getEmail());
-                ref.child("connection")
-                        .setValue("parent");
+                //Data-Base play
+                sendKid_newParentRequest(input.getText().toString());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -997,15 +1136,97 @@ public class Profile extends AppCompatActivity implements AdapterView.OnItemSele
         builder.show();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    public void sendKid_newParentRequest(String mail) {
+        if (!allUsers.contains(mail)) {
+            Toast.makeText(Profile.this,
+                    "user doesn't exists",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
 
+        if (requestSentTo.contains(mail)) {
+            Toast.makeText(Profile.this,
+                    "User already has a pending request.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.public_usersDB))
+                .child(prepareStringToDataBase(mail))
+                .child("fam")
+                .child("requests").push();
+        ref.child("email")
+                .setValue(mAuth.getCurrentUser().getEmail());
+        ref.child("connection")
+                .setValue("parent");
+        ref.child("name")
+                .setValue(profileData.getName());
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
+    public void addPartner(View view) {
+        if (!shownUsrIsCurrentUsr) {
+            sendPartner_newPartnerRequest(currentUser);
+            return;
+        }
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Fill in your partners Email:");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specifies the type of input expected; this, sets the input as a text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Data-Base play
+                sendPartner_newPartnerRequest(input.getText().toString());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
+
+    public void sendPartner_newPartnerRequest(String mail) {
+        if (!allUsers.contains(mail)) {
+            Toast.makeText(Profile.this,
+                    "user doesn't exists",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (requestSentTo.contains(mail)) {
+            Toast.makeText(Profile.this,
+                    "User already has a pending request.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.public_usersDB))
+                .child(prepareStringToDataBase(mail))
+                .child("fam")
+                .child("requests").push();
+        ref.child("email")
+                .setValue(mAuth.getCurrentUser().getEmail());
+        ref.child("connection")
+                .setValue("partner");
+        ref.child("name")
+                .setValue(profileData.getName());
+    }
+    //TODO add same for partner and kid
+
+
 
 //    public void changeImage(View view) {
 //        Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));

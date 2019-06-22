@@ -103,8 +103,8 @@ public class Event extends AppCompatActivity {
 
 
     public void goToHost(View view) {
-        Profile.setCurrentUser(eventData.getHost());
         Intent intent = new Intent(this, Profile.class);
+        intent.putExtra("USER_MAIL", eventData.getHost());
         startActivity(intent);
     }
 }

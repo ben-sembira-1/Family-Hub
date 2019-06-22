@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class signUp extends AppCompatActivity {
+public class SignUp extends AppCompatActivity {
 
     EditText usernameEditT, passwordEditT, checkPasswordEditT;
     Button signUpBtn;
@@ -143,13 +143,13 @@ public class signUp extends AppCompatActivity {
                                         myRef.child("email").setValue(FBuser.getEmail());
 
                                         database.getReference().child("allUsers")
-                                                .push().setValue(mAuth.getCurrentUser().getEmail().toString());
+                                                .push().setValue(mAuth.getCurrentUser().getEmail());
 
-                                        Profile.setCurrentUserToMyUser();
-                                        Intent intent = new Intent(signUp.this, Profile.class);
+                                        Intent intent = new Intent(SignUp.this, Profile.class);
+                                        intent.putExtra("USER_MAIL", FirebaseAuth.getInstance().getCurrentUser().getEmail());
                                         startActivity(intent);
                                     } else {
-                                        Toast.makeText(signUp.this, "email has been used or is not valid", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SignUp.this, "email has been used or is not valid", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
@@ -161,23 +161,13 @@ public class signUp extends AppCompatActivity {
 
     }
 
-    //TODO לא בתיק פרוייקט
-    public static String buildUsername(String s){
-        String temp = s;
-
-        for (int i = 0; i < temp.length(); i++) {
-            if (temp.charAt(i) == '@') {
-                temp = temp.substring(0,i);
-                break;
-            }
-        }
-
-        return temp;
-    }
-
     private int usernameLegal(String usrName) {
         boolean flag = true;
         String temp = usrName;
+
+        if (usrName.contains("\\")) {
+            return 4;
+        }
 
         for (int i = 0; flag && i < temp.length(); i++) {
             if (temp.charAt(i) == ' ')

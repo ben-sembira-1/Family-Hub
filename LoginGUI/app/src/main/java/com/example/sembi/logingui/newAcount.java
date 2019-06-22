@@ -1,9 +1,10 @@
 package com.example.sembi.logingui;
 
 import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class newAcount extends AppCompatActivity {
 
@@ -14,7 +15,7 @@ public class newAcount extends AppCompatActivity {
     }
 
     public void signUp(View view){
-        Intent intent2 = new Intent(this, signUp.class);
+        Intent intent2 = new Intent(this, SignUp.class);
         startActivity(intent2);
     }
 }

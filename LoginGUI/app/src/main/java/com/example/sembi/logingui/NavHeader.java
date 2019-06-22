@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class navHeader extends AppCompatActivity {
+public class NavHeader extends AppCompatActivity {
 
 
 //    TextView navFullName;

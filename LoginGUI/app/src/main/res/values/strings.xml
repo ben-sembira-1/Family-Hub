@@ -35,7 +35,7 @@
     <string name="adress_default" translatable="false">XXX street - 000</string>
 
 
-    <!--signUp problems-->
+    <!--SignUp problems-->
     <string name="user_taken" translatable="false">An acount was all ready opend with this E-mail.</string>
     <string name="user_not_proper" translatable="false">E-mail not valid.</string>
     <string name="pass_not_match" translatable="false">Your passwords are not matching.</string>
@@ -60,6 +60,9 @@
     <string name="event_btn_no" translatable="false">no</string>
     <string name="event_btn_maybe" translatable="false">maybe</string>
     <string name="event_description_header" translatable="false">Description</string>
+
+    <!--TAGS-->
+    <string name="profile_extra_mail_tag" translatable="false">USER_MAIL</string>
 
 
     <!-- -

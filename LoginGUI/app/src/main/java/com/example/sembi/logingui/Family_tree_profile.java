@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 // TODO Currently Not In Use
-public class family_tree_profile extends View {
+public class Family_tree_profile extends View {
 
 
     private String sFullName;
@@ -19,7 +19,7 @@ public class family_tree_profile extends View {
 
     private Paint myPaint, picPaint, fullNamePaint, fullNameBorderPaint;
 
-    public family_tree_profile(Context context, AttributeSet attrs) {
+    public Family_tree_profile(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         picPaint = new Paint();
@@ -27,12 +27,12 @@ public class family_tree_profile extends View {
         fullNamePaint = new Paint();
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-                R.styleable.family_tree_profile, 0, 0);
+                R.styleable.Family_tree_profile, 0, 0);
 
         try {
             //get the text and colors specified using the names in attrs.xml
-            sFullName = a.getString(R.styleable.family_tree_profile_fullName);
-            imageDrawable = a.getDrawable(R.styleable.family_tree_profile_drawable);
+            sFullName = a.getString(R.styleable.Family_tree_profile_fullName);
+            imageDrawable = a.getDrawable(R.styleable.Family_tree_profile_drawable);
         } finally {
             a.recycle();
         }

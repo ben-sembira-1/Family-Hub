@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void autoSignIn() {
         if (serial_ASI != null && serial_user != null && uid != "" && serial_ASI != "" && serial_user != "") {
-            Profile.setCurrentUserToMyUser();
+            //TODO
             login();
         }
     }
@@ -220,9 +220,7 @@ public class LoginActivity extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("personalData");
         myRef.child("email").setValue(user.getEmail());
 
-
-        Profile.setCurrentUserToMyUser();
-        Intent intent = new Intent(LoginActivity.this, homeScreen.class);
+        Intent intent = new Intent(LoginActivity.this, HomeScreen.class);
         startActivity(intent);
     }
 
