@@ -2,7 +2,6 @@ package com.example.sembi.logingui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import static com.example.sembi.logingui.StaticMethods.prepareStringToDataBase;
+import static com.example.sembi.logingui.StaticMethods.*;
 
 public class FamilyTree extends AppCompatActivity {
 
@@ -35,16 +35,11 @@ public class FamilyTree extends AppCompatActivity {
     //String familyTreeString;
     private String currentUser;
     //for ListView
-    private FamilyTreeNodeUIListAdapter brothersAdapter, partnersAdapter;
-    private DataSnapshot publicUsers;
+    private FamilyTreeNodeUIListAdapter brothersAdapter, parentsAdapter, kidsAdapter;
     private DatabaseReference reference;
     private FirebaseUser firebaseUser;
-
-    private LinkedList mParents;
-    private LinkedList<LinkedList<String>> mMarried, mDivorced;
-    private LinkedList<String> mBrothers;
-    private ListView brothersListView, partnersListView;
-    private ArrayList<FamilyTreeNodeUIModel> brothersModelsList, partnersModelsList;
+    private ListView brothersListView, kidsListView;
+    private ArrayList<FamilyTreeNodeUIModel> brothersModelsList, parentsModelsList, kidsModelsList;
 
     public void setCurrentUser(String currentUser) {
         this.currentUser = prepareStringToDataBase(currentUser);
@@ -59,148 +54,283 @@ public class FamilyTree extends AppCompatActivity {
         //familyTreeString = null;
 
 
+        setPublicUsersListener();
+
+
         intializeFam();
-        preperLists();
+        preppierLists();
         setDBListeners();
+        setNodesVisibility(View.GONE, View.GONE, View.GONE);
+
+        getPublicUserReference().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                setDBListeners();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    private void preperLists() {
+    private void setNodesVisibility(int leftParent, int rightParent, int partner) {
+        if ((leftParent != View.GONE && leftParent != View.VISIBLE && leftParent != View.INVISIBLE)
+                || (rightParent != View.GONE && rightParent != View.VISIBLE && rightParent != View.INVISIBLE)
+                || (partner != View.GONE && partner != View.VISIBLE && partner != View.INVISIBLE)) {
+
+            Toast.makeText(this, "visibility put isn't gone,visible ot invisible", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        setLeftParentVisibility(leftParent);
+        setRightParentVisibility(rightParent);
+        setPartnerVisibility(partner);
+    }
+
+    private void setLeftParentVisibility(int leftParent) {
+        if ((leftParent != View.GONE && leftParent != View.VISIBLE && leftParent != View.INVISIBLE)) {
+
+            Toast.makeText(this, "visibility put isn't gone,visible ot invisible", Toast.LENGTH_LONG).show();
+            return;
+        }
+        ImageView leftParentIV = findViewById(R.id.leftParentIV);
+
+        TextView leftParentTV = findViewById(R.id.leftParentNameTV);
+
+        leftParentIV.setVisibility(leftParent);
+        leftParentTV.setVisibility(leftParent);
+    }
+
+    private void setRightParentVisibility(int rightParent) {
+        if ((rightParent != View.GONE && rightParent != View.VISIBLE && rightParent != View.INVISIBLE)) {
+
+            Toast.makeText(this, "visibility put isn't gone,visible ot invisible", Toast.LENGTH_LONG).show();
+            return;
+        }
+        ImageView rightParentIV = findViewById(R.id.rightParentIV);
+
+        TextView rightParentTV = findViewById(R.id.rightParentNameTV);
+
+        rightParentIV.setVisibility(rightParent);
+        rightParentTV.setVisibility(rightParent);;
+    }
+
+    private void setPartnerVisibility(int partner) {
+        if ((partner != View.GONE && partner != View.VISIBLE && partner != View.INVISIBLE)) {
+
+            Toast.makeText(this, "visibility put isn't gone,visible ot invisible", Toast.LENGTH_LONG).show();
+            return;
+        }
+        ImageView partnerIV = findViewById(R.id.partnerIV),
+                partnerFrameIV = findViewById(R.id.partnerFrameIV);
+
+        TextView partnerTV = findViewById(R.id.partnerNameTV);
+
+        partnerFrameIV.setVisibility(partner);
+        partnerIV.setVisibility(partner);
+        partnerTV.setVisibility(partner);
+    }
+
+    private void preppierLists() {
 
         brothersListView = findViewById(R.id.brothersListView);
-        partnersListView = findViewById(R.id.partnersListView);
+        kidsListView = findViewById(R.id.kidsListView);
         //brothers
         brothersModelsList = new ArrayList<>();
         brothersAdapter = new FamilyTreeNodeUIListAdapter(this, brothersModelsList);
         brothersListView.setAdapter(brothersAdapter);
-        //partners
-        partnersModelsList = new ArrayList<>();
-        partnersAdapter = new FamilyTreeNodeUIListAdapter(this, partnersModelsList);
-        partnersListView.setAdapter(partnersAdapter);
+        //kids
+        kidsModelsList = new ArrayList<>();
+        kidsAdapter = new FamilyTreeNodeUIListAdapter(this, kidsModelsList);
+        kidsListView.setAdapter(kidsAdapter);
+        //parents
+        parentsModelsList = new ArrayList<>();
+        //partner
+
     }
 
-    private void intializeFam(){
+    private void intializeFam() {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference();
         setCurrentUser(firebaseUser.getEmail());
-        mParents = new LinkedList();
         //(mKids) -> (married/divorced) -> (a partner from this list of partners, list of kids)
-        mMarried = new LinkedList<>();
-        mDivorced = new LinkedList<>();
     }
 
     private void setDBListeners() {
         //family tree
         DatabaseReference publicUserReference = getPublicUserReference();
-        publicUserReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                collectAllRecords(dataSnapshot);
-                brothersAdapter.notifyDataSetChanged();
-                partnersAdapter.notifyDataSetChanged();
-            }
+        LinkedList<String> brothers = get(currentUser, famFields.brothers);
+        for (String brother : brothers) {
+            publicUserReference.child(prepareStringToDataBase(brother)).child(getString(R.string.personal_dataDB)).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString(), null);
+                    brothersModelsList.add(familyTreeNodeUIModel);
+                    shrinkFamilyTreeNodeUIModelArrayList(brothersModelsList);
+                    brothersAdapter.notifyDataSetChanged();
+                }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
 
-            }
-        });
-
-        //all users
-        getAllUsersReference().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                publicUsers = dataSnapshot;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-
-            }
-        });
-
-
-    }
-
-    private void collectAllRecords(DataSnapshot dataSnapshot) {
-        for (DataSnapshot currDS : dataSnapshot.child(currentUser).child("fam").child("kids").getChildren()) {
-            DataSnapshot currKid = dataSnapshot.child(prepareStringToDataBase(currDS.getValue(String.class)));
-            String name = currKid.child(getString(R.string.personal_dataDB))
-                    .child("name")
-                    .getValue(String.class);
-            //TODO
-            //Uri uri = new Uri.Builder().build();
-            Uri uri = null;
-            brothersModelsList.add(new FamilyTreeNodeUIModel(name, uri));
-            //TODO Collect correct records
-            partnersModelsList.add(new FamilyTreeNodeUIModel(name, uri));
+                }
+            });
         }
+        LinkedList<String> partners = get(currentUser, famFields.partner);
+        for (String partner : partners) {
+            publicUserReference.child(prepareStringToDataBase(partner)).child(getString(R.string.personal_dataDB)).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString(), null);
+                    TextView partnerName = findViewById(R.id.partnerNameTV);
+                    partnerName.setText(familyTreeNodeUIModel.getName());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+
+                }
+            });
+        }
+        LinkedList<String> kids = get(currentUser, famFields.kids);
+        for (String kid : kids) {
+            publicUserReference.child(prepareStringToDataBase(kid)).child(getString(R.string.personal_dataDB)).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // This method is called once with the initial value and again
+                    // whenever data at this location is updated.
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString(), null);
+                    kidsModelsList.add(familyTreeNodeUIModel);
+                    shrinkFamilyTreeNodeUIModelArrayList(kidsModelsList);
+                    kidsAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+
+                }
+            });
+        }
+        publicUserReference.child(prepareStringToDataBase(currentUser)).child(getString(R.string.famDB)).child("parents").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                parentsModelsList = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(ds.child("name").getValue().toString(), null);
+                    parentsModelsList.add(familyTreeNodeUIModel);
+                }
+
+                for (int i = 0; i < parentsModelsList.size() && i < 2; i++) {
+                    TextView parent = null;
+
+                    if (i == 1) parent = findViewById(R.id.rightParentNameTV);
+                    else if (i == 0) parent = findViewById(R.id.leftParentNameTV);
+
+                    parent.setText(parentsModelsList.get(i).getName());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+
+            }
+        });
+
+        if (parentsModelsList.size() >= 1)
+            setLeftParentVisibility(View.VISIBLE);
+        if (parentsModelsList.size() >= 2)
+            setRightParentVisibility(View.VISIBLE);
+        if (partners.size() > 0)
+            setPartnerVisibility(View.VISIBLE);
     }
 
+    private void shrinkFamilyTreeNodeUIModelArrayList(ArrayList<FamilyTreeNodeUIModel> modelsList) {
+        ArrayList<FamilyTreeNodeUIModel> shrinked = new ArrayList<>();
+        ArrayList<String> shrinked_Strings = new ArrayList<>();
+        for (FamilyTreeNodeUIModel f : modelsList) {
+            if (!shrinked_Strings.contains(f.getName())) {
+                shrinked.add(f);
+                shrinked_Strings.add(f.getName());
+            }
+        }
+        modelsList.clear();
+        modelsList.addAll(shrinked);
+    }
 
-    private DatabaseReference getAllUsersReference(){
+//    private void collectAllRecords(DataSnapshot dataSnapshot) {
+//        for (DataSnapshot currDS : dataSnapshot.child(currentUser).child("fam").child("kids").getChildren()) {
+//            DataSnapshot currKid = dataSnapshot.child(prepareStringToDataBase(currDS.getValue(String.class)));
+//            String name = currKid.child(getString(R.string.personal_dataDB))
+//                    .child("name")
+//                    .getValue(String.class);
+//            //TODO
+//            //Uri uri = new Uri.Builder().build();
+//            Uri uri = null;
+//            brothersModelsList.add(new FamilyTreeNodeUIModel(name, uri));
+//            //TODO Collect correct records
+//        }
+//    }
+
+    private DatabaseReference getAllUsersReference() {
         return reference.child(getString(R.string.all_usersDB));
     }
 
-    private void gatherAllCloseFamily(){
-        intializeFam();
-        DataSnapshot currUserFam = publicUsers.child(firebaseUser.getEmail()).child("fam");
-        //partners & kids
-        for (DataSnapshot partner:
-             currUserFam.child("kids").child("married").getChildren()) {
-            LinkedList kids = new LinkedList();
-            kids.addFirst(partner.getKey());
-            mMarried.add(kids);
-            for (DataSnapshot kid:
-             partner.getChildren()) {
-                kids.addLast(kid.getValue().toString());
-            }
-        }
-        for (DataSnapshot partner:
-                currUserFam.child("kids").child("divorced").getChildren()) {
-            LinkedList kids = new LinkedList();
-            kids.addFirst(partner.getKey());
-            mDivorced.add(kids);
-            for (DataSnapshot kid:
-                    partner.getChildren()) {
-                kids.addLast(kid.getValue().toString());
-            }
-        }
-        for(DataSnapshot parent : currUserFam.child("parents").getChildren()) {
-            String currParent = parent.getValue().toString();
-            mParents.add(currParent);
-
-            //brothers
-            String[] positions = {"married","divorced"};
-            for (String position:
-                    positions) {
-                for (DataSnapshot partner :
-                        publicUsers.child(currParent).child("kids").child(position).getChildren()) {
-                    for (DataSnapshot bro : partner.getChildren()) {
-                        if (!modelsListContains(brothersModelsList, bro.getValue().toString())) {
-                            brothersModelsList.add(new FamilyTreeNodeUIModel(bro.getValue().toString(), null));
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    private boolean modelsListContains(ArrayList<FamilyTreeNodeUIModel> modelsList, String toSearch) {
-        for(FamilyTreeNodeUIModel curr : modelsList){
-            if(curr.getName().equals(toSearch)){
-                return true;
-            }
-        }
-        return false;
-    }
-
+//    private void gatherAllCloseFamily(){
+//
+//        intializeFam();
+//
+//        DataSnapshot currUserFam = publicUsers.child(firebaseUser.getEmail()).child("fam");
+//        //partners & kids
+//        for (DataSnapshot partner:
+//             currUserFam.child("kids").child("married").getChildren()) {
+//            LinkedList kids = new LinkedList();
+//            kids.addFirst(partner.getKey());
+//            for (DataSnapshot kid:
+//             partner.getChildren()) {
+//                kids.addLast(kid.getValue().toString());
+//            }
+//        }
+//        for (DataSnapshot partner:
+//                currUserFam.child("kids").child("divorced").getChildren()) {
+//            LinkedList kids = new LinkedList();
+//            kids.addFirst(partner.getKey());
+//            for (DataSnapshot kid:
+//                    partner.getChildren()) {
+//                kids.addLast(kid.getValue().toString());
+//            }
+//        }
+//        for(DataSnapshot parent : currUserFam.child("parents").getChildren()) {
+//            String currParent = parent.getValue().toString();
+//            mParents.add(currParent);
+//
+//            //brothers
+//            String[] positions = {"married","divorced"};
+//            for (String position:
+//                    positions) {
+//                for (DataSnapshot partner :
+//                        publicUsers.child(currParent).child("kids").child(position).getChildren()) {
+//                    for (DataSnapshot bro : partner.getChildren()) {
+//                        if (!modelsListContains(brothersModelsList, bro.getValue().toString())) {
+//                            brothersModelsList.add(new FamilyTreeNodeUIModel(bro.getValue().toString(), null));
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
 
     private DatabaseReference getPublicUserReference() {
         return reference.child(getString(R.string.public_usersDB));
@@ -209,7 +339,6 @@ public class FamilyTree extends AppCompatActivity {
     public void goHome(View view) {
         startActivity(new Intent(this, HomeScreen.class));
     }
-
 
 //    public void BuildTree(){
 //        String theCurrentTree = familyTreeString;

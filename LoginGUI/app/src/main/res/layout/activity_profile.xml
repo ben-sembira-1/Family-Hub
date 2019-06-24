@@ -73,10 +73,10 @@
                 app:layout_constraintEnd_toStartOf="@+id/editImageV_Button_"
                 app:layout_constraintStart_toEndOf="@+id/profile_imageView"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.26" />
+                app:layout_constraintVertical_bias="0.26"
+                />
 
             <EditText
-
                 android:id="@+id/editNameV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 android:hint="@string/full_name_default"
                 android:inputType="textEmailAddress"
                 android:textSize="30sp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:layout_constraintBaseline_toBaselineOf="@+id/NameTextV"
                 app:layout_constraintEnd_toEndOf="@+id/NameTextV"
                 app:layout_constraintStart_toStartOf="@+id/NameTextV" />

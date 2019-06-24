@@ -48,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
     String serial_ASI = "";
     String uid = "";
 
+    private boolean loginInProgress;
+
     FirebaseDatabase database;
     DatabaseReference myRef;
 
@@ -60,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
+        loginInProgress = false;
 
         b = findViewById(R.id.toggleButtonRemMe);
         b.setChecked(false);
@@ -172,6 +175,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginAttempt(View view) {
+        if (loginInProgress){
+            Toast.makeText(this, "Login attempt in progress, please wait..", Toast.LENGTH_LONG);
+            return;
+        }
+        loginInProgress = true;
         pass.setTextColor(getColor(R.color.grey));
         user.setTextColor(getColor(R.color.grey));
         if (user.getText().toString().length() == 0){
@@ -195,6 +203,7 @@ public class LoginActivity extends AppCompatActivity {
                 }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                loginInProgress = false;
                 Toast.makeText(LoginActivity.this, "failed to sign in", Toast.LENGTH_LONG).show();
             }
         }).addOnCanceledListener(LoginActivity.this, new OnCanceledListener() {

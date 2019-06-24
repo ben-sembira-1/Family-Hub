@@ -36,6 +36,18 @@
         app:layout_constraintTop_toTopOf="@+id/leftParentIV"
         app:srcCompat="@mipmap/no_profile_pic_round" />
 
+    <ImageView
+        android:id="@+id/partnerIV"
+        android:layout_width="@dimen/treePicDimens"
+        android:layout_height="@dimen/treePicDimens"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/partnerFrameIV"
+        app:layout_constraintEnd_toEndOf="@+id/partnerFrameIV"
+        app:layout_constraintStart_toStartOf="@+id/partnerFrameIV"
+        app:layout_constraintTop_toBottomOf="@+id/myPartnersTV"
+        app:srcCompat="@mipmap/no_profile_pic_round" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
         android:layout_width="wrap_content"
@@ -88,21 +100,8 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/meTV"
         app:layout_constraintStart_toEndOf="@+id/meTV" />
 
-    <ListView
-        android:id="@+id/partnersListView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-
-        app:layout_constraintBottom_toBottomOf="@id/guideline3"
-        app:layout_constraintLeft_toLeftOf="@id/guideline"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myPartnersTV">
-
-    </ListView>
-
     <TextView
-        android:id="@+id/leftParentNameIV"
+        android:id="@+id/leftParentNameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -114,7 +113,7 @@
         app:layout_constraintTop_toBottomOf="@+id/leftParentIV" />
 
     <TextView
-        android:id="@+id/rightParentNameIV"
+        android:id="@+id/rightParentNameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -125,6 +124,16 @@
         app:layout_constraintStart_toStartOf="@+id/rightParentIV"
         app:layout_constraintTop_toBottomOf="@+id/rightParentIV" />
 
+
+    <TextView
+        android:id="@+id/partnerNameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="name"
+        app:layout_constraintEnd_toEndOf="@+id/partnerIV"
+        app:layout_constraintStart_toStartOf="@+id/partnerIV"
+        app:layout_constraintTop_toBottomOf="@+id/partnerIV" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -138,7 +147,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        app:layout_constraintTop_toBottomOf="@id/guideline3"
+        app:layout_constraintTop_toBottomOf="@id/myBrothersTV"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -147,11 +156,38 @@
         android:id="@+id/kidsListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:layout_constraintTop_toBottomOf="@id/guideline3"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="96dp"
+        app:layout_constraintTop_toBottomOf="@id/myKidsTV"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/myKidsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="My Kids"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/kidsListView"
+        app:layout_constraintStart_toStartOf="@+id/kidsListView"
+        app:layout_constraintTop_toBottomOf="@id/guideline3" />
+
+    <TextView
+        android:id="@+id/myBrothersTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="My Brothers"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/brothersListView"
+        app:layout_constraintStart_toStartOf="@id/brothersListView"
+        app:layout_constraintTop_toBottomOf="@id/guideline3" />
 
     <Switch
         android:id="@+id/switch1"
@@ -190,6 +226,20 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+    <ImageView
+        android:id="@+id/partnerFrameIV"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/myPartnersTV"
+        app:srcCompat="@drawable/love_frame" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -45,10 +45,17 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 
+import static com.example.sembi.logingui.StaticMethods.ADDRESS_INDEX;
+import static com.example.sembi.logingui.StaticMethods.BDAY_INDEX;
+import static com.example.sembi.logingui.StaticMethods.CITY_INDEX;
 import static com.example.sembi.logingui.StaticMethods.DAYS;
+import static com.example.sembi.logingui.StaticMethods.EMAIL_INDEX;
 import static com.example.sembi.logingui.StaticMethods.MONTHS;
+import static com.example.sembi.logingui.StaticMethods.NAME_INDEX;
+import static com.example.sembi.logingui.StaticMethods.PHONE_INDEX;
 import static com.example.sembi.logingui.StaticMethods.getFamilyMembers;
 import static com.example.sembi.logingui.StaticMethods.prepareStringToDataBase;
+import static com.example.sembi.logingui.StaticMethods.setPublicUsersListener;
 
 public class HomeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,6 +89,8 @@ public class HomeScreen extends AppCompatActivity
         ((ImageView) findViewById(R.id.newPost_imgPreviewIV)).setImageURI(newPostImagePath);
 
         currentId = -1;
+
+        setPublicUsersListener();
 
         weeksToShowStrings = new LinkedList<>();
         weeksToShowRefs = new LinkedList<>();
@@ -222,6 +231,19 @@ public class HomeScreen extends AppCompatActivity
                 return 0;
             }
         });
+
+    }
+    private void shrinkFeedLinkedList(ArrayList<Post> allPosts) {
+        ArrayList<Post> shrinked = new ArrayList<>();
+        ArrayList<String> shrinked_Strings = new ArrayList<>();
+        for (Post p : allPosts) {
+            if (!shrinked_Strings.contains("" + p.getmPublishDate().getTime())) {
+                shrinked.add(p);
+                shrinked_Strings.add("" + p.getmPublishDate().getTime());
+            }
+        }
+        allPosts.clear();
+        allPosts.addAll(shrinked);
     }
 
     private Boolean collectAllRecords(DataSnapshot dataSnapshot) {
@@ -243,7 +265,6 @@ public class HomeScreen extends AppCompatActivity
             c.set(Calendar.MILLISECOND, Integer.parseInt(dateReadyForDB.getMillisecond()));
 
             records.add(new Post(mPublisherStr, mContentStr, c.getTime(), mLinkStr));
-
         }
 
         records.sort(new Comparator<Post>() {
@@ -271,6 +292,8 @@ public class HomeScreen extends AppCompatActivity
                 return -1 * c1.compareTo(c2);
             }
         });
+
+        shrinkFeedLinkedList(records);
 
         return true;
     }
@@ -542,7 +565,7 @@ public class HomeScreen extends AppCompatActivity
         c.setTime(newPost.getmPublishDate());
 
 
-        for (String mail : getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+        for (String mail : getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail(), 1)) {
             DatabaseReference auxRef = databasePublicUsersReference.child(prepareStringToDataBase(mail)).child(getString(R.string.userFeedDB))
                     .child(dateReadyForDB.getYear() + "," + dateReadyForDB.getMonth() + "," + dateReadyForDB.getWeek()).child(dateReadyForDB.toString());
             auxRef.setValue(postReadyForDB);
@@ -580,6 +603,38 @@ public class HomeScreen extends AppCompatActivity
             this.records = records;
         }
 
+        private ProfileModel getPublicProfileModel(ProfileModel profileModel, String mail) {
+            String[] publicData = new String[6];
+            publicData[PHONE_INDEX] = profileModel.getPhone();
+            publicData[EMAIL_INDEX] = profileModel.getEmail();
+            publicData[BDAY_INDEX] = profileModel.getDate();
+            publicData[CITY_INDEX] = profileModel.getCity();
+            publicData[ADDRESS_INDEX] = profileModel.getAddress();
+            publicData[NAME_INDEX] = profileModel.getName();
+
+            for (int index = 0; index < Profile.NUMBER_OF_PARAMETERS; index++) {
+                if (publicData[index] == null
+                        || publicData[index].length() == 0
+                        || (publicData[index].startsWith("%f") && !StaticMethods.getFamilyMembers(mail, 0)
+                            .contains(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                ) {
+                    publicData[index] = "";
+                }
+
+                if (publicData[index].startsWith("%f"))
+                    publicData[index] = publicData[index].substring(2);
+            }
+
+            profileModel.setPhone(publicData[PHONE_INDEX]);
+            profileModel.setEmail(publicData[EMAIL_INDEX]);
+            profileModel.setDate(publicData[BDAY_INDEX]);
+            profileModel.setCity(publicData[CITY_INDEX]);
+            profileModel.setAddress(publicData[ADDRESS_INDEX]);
+            profileModel.setName(publicData[NAME_INDEX]);
+
+            return profileModel;
+        }
+
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View listItem = convertView;
@@ -591,16 +646,18 @@ public class HomeScreen extends AppCompatActivity
             TextView name = listItem.findViewById(R.id.post_profileNameTV);
             TextView date = listItem.findViewById(R.id.post_dateTV);
             final TextView content = listItem.findViewById(R.id.post_contentTV);
-            TextView reedMore = listItem.findViewById(R.id.post_reedMoreTV);
+            final TextView reedMore = listItem.findViewById(R.id.post_reedMoreTV);
             ImageView profileImg = listItem.findViewById(R.id.post_profilePhotoIV);
             ImageView additionalImg = listItem.findViewById(R.id.post_additionalPhotoIV);
 
-            name.setText(current.getmPublisherStr());
+            final ProfileModel profileModel = getPublicProfileModel(StaticMethods.getProfileModel(current.getmPublisherStr()), current.getmPublisherStr());
+            name.setText(profileModel.getName());
             content.setText(current.getmContentStr());
             Calendar c = Calendar.getInstance();
             c.setTime(current.getmPublishDate());
 
-            date.setText(DAYS[c.get(Calendar.DAY_OF_WEEK)] + ", " + MONTHS[c.get(Calendar.MONTH)] + " " + c.get(Calendar.DAY_OF_MONTH) + ", " + c.get(Calendar.YEAR));
+            date.setText(DAYS[c.get(Calendar.DAY_OF_WEEK)] + ", " + MONTHS[c.get(Calendar.MONTH)]
+                    + " " + c.get(Calendar.DAY_OF_MONTH) + ", " + c.get(Calendar.YEAR) + ", " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
             if (content.getLineCount() > 5)
                 reedMore.setVisibility(View.VISIBLE);
 
@@ -608,6 +665,15 @@ public class HomeScreen extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     content.setMaxLines(100);
+                }
+            });
+
+            name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(HomeScreen.this, Profile.class);
+                    intent.putExtra(getString(R.string.profile_extra_mail_tag), profileModel.getEmail());
+                    startActivity(intent);
                 }
             });
 
