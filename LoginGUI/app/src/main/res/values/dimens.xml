@@ -14,7 +14,7 @@
     <dimen name="profileEditDataMaxWidth">200dp</dimen>
     <dimen name="max_height_for_scroll_event">50dp</dimen>
     <dimen name="profileTextDataMaxWidth">250dp</dimen>
-    <dimen name="treePicDimens">55dp</dimen>
+    <dimen name="treePicDimens">40dp</dimen>
     <dimen name="treePicNameHeight">20dp</dimen>
     <dimen name="treePicNameTextSize">15dp</dimen>
 

@@ -78,7 +78,7 @@
     <string name="nav_header_next_event" translatable="false">next: event - date</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="title_activity_family_members" translatable="false">FamilyMembers</string>
-    <string name="empty_fields_dialog_message" translatable="false">Oops! you left some fields empty.. Keeping them empty can effect on the application functionality and stability.</string>
+    <string name="empty_fields_dialog_message" translatable="false">Oops! you left some fields empty.. Keeping them empty can effect on the application functionality.</string>
     <string name="empty_fields_dialog_title" translatable="false">Some Fields Left Empty</string>
     <string name="keep_on_with_un_filled_fields_button_text" translatable="false">Keep on</string>
     <string name="cancel_keep_on_with_un_filled_fields_button_text" translatable="false">Go back</string>
@@ -87,6 +87,10 @@
     <string-array name="privacyOptions">
         <item>Only me</item>
         <item>My family</item>
+        <item>Everyone</item>
+    </string-array>
+
+    <string-array name="privacyOptionsForMail">
         <item>Everyone</item>
     </string-array>
 
@@ -101,7 +105,8 @@
 
 
     //Storage titles
-    <string name="post_photos" translatable="false">postPhotos</string>
+    <string name="post_images" translatable="false">postPhotos</string>
+    <string name="profile_images" translatable="false">profileImages</string>
 
     //familyTree
     <string name="god_name" translatable="false">hod kdushato hacol yachol</string>
@@ -113,6 +118,7 @@
     <!-- Preference Titles -->
     <string name="messages_header" translatable="false">Messages</string>
     <string name="sync_header" translatable="false">Sync</string>
+    <string name="account_header_settings" translatable="false">Account</string>
 
     <!-- Messages Preferences -->
     <string name="signature_title" translatable="false">Your signature</string>
@@ -124,5 +130,8 @@
     <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
+
+    <!--Account Preferences-->
+    <string name="deleteAccount" translatable="false">Delete My Account</string>
 
 </resources>

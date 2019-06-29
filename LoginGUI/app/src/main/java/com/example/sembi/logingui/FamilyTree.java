@@ -2,13 +2,16 @@ package com.example.sembi.logingui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,11 +28,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import static com.example.sembi.logingui.StaticMethods.*;
+import static com.example.sembi.logingui.StaticMethods.famFields;
+import static com.example.sembi.logingui.StaticMethods.fromProfileModelColectionToStringEmailsLinkedList;
+import static com.example.sembi.logingui.StaticMethods.get;
+import static com.example.sembi.logingui.StaticMethods.prepareStringToDataBase;
 
 public class FamilyTree extends AppCompatActivity {
 
@@ -40,6 +51,10 @@ public class FamilyTree extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private ListView brothersListView, kidsListView;
     private ArrayList<FamilyTreeNodeUIModel> brothersModelsList, parentsModelsList, kidsModelsList;
+    public static boolean bGoToProfile = false;
+    private LinkedList<String> brothersEmailsList, parentsEmailsList, kidsEmailsList;
+    private String partnerEmail;
+    private Switch aSwitch;
 
     public void setCurrentUser(String currentUser) {
         this.currentUser = prepareStringToDataBase(currentUser);
@@ -49,15 +64,28 @@ public class FamilyTree extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family_tree);
+        brothersEmailsList = new LinkedList<>();
+        parentsEmailsList = new LinkedList<>();
+        kidsEmailsList = new LinkedList<>();
+        partnerEmail = null;
 
 //        god = new FamilyTreeNode(getString(R.string.god_name));
         //familyTreeString = null;
 
 
-        setPublicUsersListener();
+        aSwitch = findViewById(R.id.switch1);
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                bGoToProfile = isChecked;
+            }
+        });
 
 
         intializeFam();
+        TextView meHeader = findViewById(R.id.meTV);
+        meHeader.setText(StaticMethods.getProfileModel(currentUser).getName());
         preppierLists();
         setDBListeners();
         setNodesVisibility(View.GONE, View.GONE, View.GONE);
@@ -71,6 +99,31 @@ public class FamilyTree extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        setCurrentUserImageFromStorage();
+    }
+
+    private void setCurrentUserImageFromStorage() {
+        StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
+                .child(prepareStringToDataBase(currentUser) + ".jpg");
+
+        final ImageView meIV = findViewById(R.id.meIV);
+
+        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Picasso.get()
+                        .load(uri)
+                        .error(getDrawable(R.drawable.logo_with_white))
+                        .into(meIV);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                meIV.setImageDrawable(getDrawable(R.drawable.logo_with_white));
+                meIV.setAdjustViewBounds(true);
             }
         });
     }
@@ -114,7 +167,7 @@ public class FamilyTree extends AppCompatActivity {
         TextView rightParentTV = findViewById(R.id.rightParentNameTV);
 
         rightParentIV.setVisibility(rightParent);
-        rightParentTV.setVisibility(rightParent);;
+        rightParentTV.setVisibility(rightParent);
     }
 
     private void setPartnerVisibility(int partner) {
@@ -152,23 +205,43 @@ public class FamilyTree extends AppCompatActivity {
     }
 
     private void intializeFam() {
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        String usrToShow; //get from putExtra
+        Intent intent = getIntent();
+        usrToShow = intent.getExtras().getString("USER_MAIL");
+
+        if (usrToShow != null
+                && prepareStringToDataBase(usrToShow).equals(
+                prepareStringToDataBase(
+                        FirebaseAuth.getInstance().getCurrentUser().getEmail()
+                )
+        )
+        ) {
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            setCurrentUser(firebaseUser.getEmail());
+        } else {
+            currentUser = usrToShow;
+        }
         reference = FirebaseDatabase.getInstance().getReference();
-        setCurrentUser(firebaseUser.getEmail());
-        //(mKids) -> (married/divorced) -> (a partner from this list of partners, list of kids)
     }
 
     private void setDBListeners() {
         //family tree
         DatabaseReference publicUserReference = getPublicUserReference();
-        LinkedList<String> brothers = get(currentUser, famFields.brothers);
+        LinkedList<String> brothers = fromProfileModelColectionToStringEmailsLinkedList(get(currentUser, famFields.brothers));
         for (String brother : brothers) {
             publicUserReference.child(prepareStringToDataBase(brother)).child(getString(R.string.personal_dataDB)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString(), null);
+                    if (dataSnapshot.child("email").getValue().toString().equals(currentUser))
+                        return;
+
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel =
+                            new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString()
+                                    , StaticMethods.getProfileImageRef(dataSnapshot.child("email").getValue().toString())
+                                    , dataSnapshot.child("email").getValue().toString());
                     brothersModelsList.add(familyTreeNodeUIModel);
                     shrinkFamilyTreeNodeUIModelArrayList(brothersModelsList);
                     brothersAdapter.notifyDataSetChanged();
@@ -181,16 +254,20 @@ public class FamilyTree extends AppCompatActivity {
                 }
             });
         }
-        LinkedList<String> partners = get(currentUser, famFields.partner);
-        for (String partner : partners) {
+        final LinkedList<String> partners = fromProfileModelColectionToStringEmailsLinkedList(get(currentUser, famFields.partner));
+        for (final String partner : partners) {
             publicUserReference.child(prepareStringToDataBase(partner)).child(getString(R.string.personal_dataDB)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString(), null);
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString(), null
+                            , dataSnapshot.child("email").getValue().toString());
                     TextView partnerName = findViewById(R.id.partnerNameTV);
                     partnerName.setText(familyTreeNodeUIModel.getName());
+
+                    setPartnerImageFromStorage(dataSnapshot.child("email").getValue().toString());
+                    partnerEmail = partner;
                 }
 
                 @Override
@@ -200,14 +277,16 @@ public class FamilyTree extends AppCompatActivity {
                 }
             });
         }
-        LinkedList<String> kids = get(currentUser, famFields.kids);
+        LinkedList<String> kids = fromProfileModelColectionToStringEmailsLinkedList(get(currentUser, famFields.kids));
         for (String kid : kids) {
             publicUserReference.child(prepareStringToDataBase(kid)).child(getString(R.string.personal_dataDB)).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString(), null);
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(dataSnapshot.child("name").getValue().toString()
+                            , StaticMethods.getProfileImageRef(dataSnapshot.child("email").getValue().toString())
+                            , dataSnapshot.child("email").getValue().toString());
                     kidsModelsList.add(familyTreeNodeUIModel);
                     shrinkFamilyTreeNodeUIModelArrayList(kidsModelsList);
                     kidsAdapter.notifyDataSetChanged();
@@ -220,24 +299,57 @@ public class FamilyTree extends AppCompatActivity {
                 }
             });
         }
+
         publicUserReference.child(prepareStringToDataBase(currentUser)).child(getString(R.string.famDB)).child("parents").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 parentsModelsList = new ArrayList<>();
+                parentsEmailsList = new LinkedList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    FamilyTreeNodeUIModel familyTreeNodeUIModel = new FamilyTreeNodeUIModel(ds.child("name").getValue().toString(), null);
+                    FamilyTreeNodeUIModel familyTreeNodeUIModel =
+                            new FamilyTreeNodeUIModel(StaticMethods.getProfileModel(ds.getValue().toString()).getName()
+                                    , StaticMethods.getProfileImageRef(ds.getValue().toString())
+                                    , dataSnapshot.getValue().toString());
                     parentsModelsList.add(familyTreeNodeUIModel);
+                    parentsEmailsList.add(ds.getValue().toString());
                 }
 
                 for (int i = 0; i < parentsModelsList.size() && i < 2; i++) {
-                    TextView parent = null;
 
-                    if (i == 1) parent = findViewById(R.id.rightParentNameTV);
-                    else if (i == 0) parent = findViewById(R.id.leftParentNameTV);
+                    TextView parent = null;
+                    ImageView parentIV = null;
+                    if (i == 1) {
+                        parent = findViewById(R.id.rightParentNameTV);
+                        parentIV = findViewById(R.id.rightParentIV);
+                    } else if (i == 0) {
+                        parent = findViewById(R.id.leftParentNameTV);
+                        parentIV = findViewById(R.id.leftParentIV);
+                    }
+
+                    final ImageView finalParentIV = parentIV;
 
                     parent.setText(parentsModelsList.get(i).getName());
+
+                    StorageReference ref = parentsModelsList.get(i).getStorageIVRef();
+
+                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            int resizeTO = 180;
+                            Picasso.get()
+                                    .load(uri)
+                                    .error(getDrawable(R.drawable.logo))
+                                    .into(finalParentIV);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            finalParentIV.setImageDrawable(getDrawable(R.drawable.logo_with_white));
+                            finalParentIV.setAdjustViewBounds(true);
+                        }
+                    });
                 }
             }
 
@@ -254,6 +366,29 @@ public class FamilyTree extends AppCompatActivity {
             setRightParentVisibility(View.VISIBLE);
         if (partners.size() > 0)
             setPartnerVisibility(View.VISIBLE);
+    }
+
+    private void setPartnerImageFromStorage(String email) {
+        final ImageView partner = findViewById(R.id.partnerIV);
+
+        StorageReference ref = StaticMethods.getProfileImageRef(email);
+
+        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                int resizeTO = 180;
+                Picasso.get()
+                        .load(uri)
+                        .error(getDrawable(R.drawable.logo))
+                        .into(partner);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                partner.setImageDrawable(getDrawable(R.drawable.logo_with_white));
+                partner.setAdjustViewBounds(true);
+            }
+        });
     }
 
     private void shrinkFamilyTreeNodeUIModelArrayList(ArrayList<FamilyTreeNodeUIModel> modelsList) {
@@ -340,6 +475,60 @@ public class FamilyTree extends AppCompatActivity {
         startActivity(new Intent(this, HomeScreen.class));
     }
 
+    public void goToPartner(View view) {
+        if (partnerEmail == null)
+            return;
+        Intent intent;
+        if (bGoToProfile) {
+            intent = new Intent(this, Profile.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), partnerEmail);
+        } else {
+            intent = new Intent(this, FamilyTree.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), partnerEmail);
+        }
+        startActivity(intent);
+    }
+
+    public void goTo1stParent(View view) {
+        if (parentsEmailsList.size() == 0)
+            return;
+        Intent intent;
+        if (bGoToProfile) {
+            intent = new Intent(this, Profile.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), parentsEmailsList.getFirst());
+        } else {
+            intent = new Intent(this, FamilyTree.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), parentsEmailsList.getFirst());
+        }
+        startActivity(intent);
+    }
+
+    public void goTo2ndParent(View view) {
+        if (parentsEmailsList.size() < 2)
+            return;
+        Intent intent;
+        if (bGoToProfile) {
+            intent = new Intent(this, Profile.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), parentsEmailsList.get(1));
+        } else {
+            intent = new Intent(this, FamilyTree.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), parentsEmailsList.get(1));
+        }
+        startActivity(intent);
+    }
+
+    public void goToCurrUser(View view) {
+        Intent intent;
+        if (bGoToProfile) {
+            intent = new Intent(this, Profile.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), currentUser);
+        } else {
+            intent = new Intent(this, FamilyTree.class);
+            intent.putExtra(getString(R.string.profile_extra_mail_tag), currentUser);
+        }
+        startActivity(intent);
+    }
+
 //    public void BuildTree(){
 //        String theCurrentTree = familyTreeString;
 //        String currRelation = "";
@@ -400,16 +589,43 @@ public class FamilyTree extends AppCompatActivity {
                 listItem = LayoutInflater.from(mContext).inflate(R.layout.family_tree_node_ui, null);
 
             }
-            FamilyTreeNodeUIModel current = records.get(position);
+            final FamilyTreeNodeUIModel current = records.get(position);
             TextView name = listItem.findViewById(R.id.FamilyTreeNodeUI_TV);
-            ImageView IV = listItem.findViewById(R.id.FamilyTreeNodeUI_IV);
+            final ImageView IV = listItem.findViewById(R.id.FamilyTreeNodeUI_IV);
             name.setText(current.getName());
             //TODO take care of URI
-            //IV.setImageURI(current.getIV());
+
+
+            StorageReference ref = current.getStorageIVRef();
+
+            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.get()
+                            .load(uri)
+                            .error(getDrawable(R.drawable.logo_with_white))
+                            .into(IV);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    IV.setImageDrawable(getDrawable(R.drawable.logo_with_white));
+                }
+            });
+
+            //IV.setImageURI(current.getStorageIVRef());
             listItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO Intents...... make Static,Public Boolean value for Toggle
+                    Intent intent;
+                    if (FamilyTree.bGoToProfile) {
+                        intent = new Intent(FamilyTree.this, Profile.class);
+                        intent.putExtra(getString(R.string.profile_extra_mail_tag), current.getEmail());
+                    } else {
+                        intent = new Intent(FamilyTree.this, FamilyTree.class);
+                        intent.putExtra(getString(R.string.profile_extra_mail_tag), current.getEmail());
+                    }
+                    startActivity(intent);
                 }
             });
             return listItem;

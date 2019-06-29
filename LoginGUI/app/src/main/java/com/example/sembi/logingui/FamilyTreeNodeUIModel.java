@@ -1,24 +1,32 @@
 package com.example.sembi.logingui;
 
-import android.net.Uri;
-import android.widget.ImageView;
-
-import java.net.URI;
+import com.google.firebase.storage.StorageReference;
 
 public class FamilyTreeNodeUIModel {
     private String name;
-    private Uri IV;
 
-    public FamilyTreeNodeUIModel(String name, Uri IV) {
+    private StorageReference IV;
+    private String email;
+
+    public FamilyTreeNodeUIModel(String name, StorageReference IV, String email) {
         this.name = name;
         this.IV = IV;
+        this.email = email;
     }
 
-    public Uri getIV() {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public StorageReference getStorageIVRef() {
         return IV;
     }
 
-    public void setIV(Uri IV) {
+    public void setIV(StorageReference IV) {
         this.IV = IV;
     }
 

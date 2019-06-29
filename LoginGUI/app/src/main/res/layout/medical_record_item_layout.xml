@@ -16,7 +16,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.13"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintStart_toEndOf="@+id/userImageFamilyMember"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -42,10 +42,10 @@
         android:text="By Israel Isareli"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintEnd_toStartOf="@+id/imageView6"
-        app:layout_constraintStart_toEndOf="@+id/imageView5" />
+        app:layout_constraintStart_toEndOf="@+id/userImageFamilyMember" />
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/userImageFamilyMember"
         android:layout_width="90dp"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
@@ -66,13 +66,13 @@
         app:srcCompat="@drawable/thumbs_up_64" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/userDateOfBirthFamilyMember"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="dd/mm/yy"
         app:layout_constraintBottom_toTopOf="@+id/dataMedicalRecord"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintStart_toEndOf="@+id/userImageFamilyMember"
         app:layout_constraintTop_toBottomOf="@+id/headerMedicalRecord" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

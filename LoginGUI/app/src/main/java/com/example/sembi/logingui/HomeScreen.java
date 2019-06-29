@@ -2,9 +2,13 @@ package com.example.sembi.logingui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +32,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +44,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -56,6 +66,7 @@ import static com.example.sembi.logingui.StaticMethods.PHONE_INDEX;
 import static com.example.sembi.logingui.StaticMethods.getFamilyMembers;
 import static com.example.sembi.logingui.StaticMethods.prepareStringToDataBase;
 import static com.example.sembi.logingui.StaticMethods.setPublicUsersListener;
+import static com.example.sembi.logingui.StaticMethods.valueEventListenerAndRefLinkedList;
 
 public class HomeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,7 +78,7 @@ public class HomeScreen extends AppCompatActivity
     private TextView navFullName, navNextEvent;
     private ImageView navProfilePic;
     private Post newPost;
-    private Uri newPostImagePath;
+    StorageReference allPostsRef;
 
     //feedView
     private LinkedList<DatabaseReference> weeksToShowRefs;
@@ -79,14 +90,16 @@ public class HomeScreen extends AppCompatActivity
     private ListView mFeedPostsList;
     private ArrayList<Post> records;
     private HomeScreenFeedPostUIListAdapter adapter;
+    private ImageView newPostImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        newPostImagePath = Uri.parse("android.resource://com.example.sembi.logingui/" + R.drawable.ok_hand);
-        ((ImageView) findViewById(R.id.newPost_imgPreviewIV)).setImageURI(newPostImagePath);
+        newPostImage = findViewById(R.id.newPost_imgPreviewIV);
+        newPostImage.setImageDrawable(getDrawable(R.drawable.logo_with_white));
+        allPostsRef = FirebaseStorage.getInstance().getReference().child(getString(R.string.post_images));
 
         currentId = -1;
 
@@ -112,11 +125,38 @@ public class HomeScreen extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = navigationView.getHeaderView(0);
         navFullName = headerView.findViewById(R.id.nav_fullName);
+        navProfilePic = headerView.findViewById(R.id.nav_profileImageView);
+        //TODO
+
+        StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
+                .child(prepareStringToDataBase(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
+
+        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                int resizeTO = 180;
+                Picasso.get()
+                        .load(uri)
+                        .error(getDrawable(R.drawable.logo))
+                        .into(navProfilePic);
+
+//        Glide.with(this /* context */)
+//                .load(ref)
+//                .into(navProfilePic);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                navProfilePic.setImageDrawable(getDrawable(R.drawable.logo_with_white));
+                navProfilePic.setAdjustViewBounds(true);
+            }
+        });
+
 
         setNav();
 
@@ -233,6 +273,7 @@ public class HomeScreen extends AppCompatActivity
         });
 
     }
+
     private void shrinkFeedLinkedList(ArrayList<Post> allPosts) {
         ArrayList<Post> shrinked = new ArrayList<>();
         ArrayList<String> shrinked_Strings = new ArrayList<>();
@@ -385,7 +426,53 @@ public class HomeScreen extends AppCompatActivity
     }
 
     public void insertImage(View view) {
-        //TODO
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 100);
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (resultCode == RESULT_OK) {
+                    if (requestCode == 100) {
+                        // Get the url from data
+                        final Uri selectedImageUri = data.getData();
+                        if (null != selectedImageUri) {
+                            // Get the path from the Uri
+                            String path = getPathFromURI(selectedImageUri);
+                            Log.i("TAG", "Image Path : " + path);
+                            // Set the image in ImageView
+                            newPostImage.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    newPostImage.setImageURI(selectedImageUri);
+                                }
+                            });
+
+                        }
+                    }
+                }
+            }
+        }).start();
+    }
+
+    /* Get the real path from the URI */
+    public String getPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
     }
 
     @Override
@@ -417,7 +504,9 @@ public class HomeScreen extends AppCompatActivity
         } else if (id == R.id.nav_new_event && id != currentId) {
             startActivity(new Intent(this, Event.class));
         } else if (id == R.id.nav_tree && id != currentId) {
-            startActivity(new Intent(this, FamilyTree.class));
+            FamilyTree.bGoToProfile = false;
+            startActivity(new Intent(this, FamilyTree.class).putExtra(getString(R.string.profile_extra_mail_tag)
+                    , FirebaseAuth.getInstance().getCurrentUser().getEmail()));
 //            inflate(R.layout.activity_family_tree);
 //            currentId = id;
         } else if (id == R.id.nav_share) {
@@ -430,6 +519,9 @@ public class HomeScreen extends AppCompatActivity
 
         } else if (id == R.id.nav_log_out) {
             FirebaseAuth.getInstance().signOut();
+            for (ValueEventListenerAndRef valueEventListenerAndRef : valueEventListenerAndRefLinkedList)
+                valueEventListenerAndRef.getRef().removeEventListener(valueEventListenerAndRef.getValueEventListener());
+            valueEventListenerAndRefLinkedList.clear();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -565,17 +657,46 @@ public class HomeScreen extends AppCompatActivity
         c.setTime(newPost.getmPublishDate());
 
 
-        for (String mail : getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail(), 1)) {
-            DatabaseReference auxRef = databasePublicUsersReference.child(prepareStringToDataBase(mail)).child(getString(R.string.userFeedDB))
+        for (ProfileModel pm : getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail(), 1)) {
+            DatabaseReference auxRef = databasePublicUsersReference.child(prepareStringToDataBase(pm.getEmail())).child(getString(R.string.userFeedDB))
                     .child(dateReadyForDB.getYear() + "," + dateReadyForDB.getMonth() + "," + dateReadyForDB.getWeek()).child(dateReadyForDB.toString());
             auxRef.setValue(postReadyForDB);
             auxRef.child("date").setValue(dateReadyForDB);
         }
 
-        FirebaseStorage.getInstance().getReference().child(getString(R.string.post_photos)).child(dateReadyForDB + "%" + newPost.getmPublisherStr())
-                .putFile(newPostImagePath);
+        savePhotoInDataBase(dateReadyForDB);
 
         fadeOutNewPostBox();
+    }
+
+    private void savePhotoInDataBase(DateReadyForDB dateReadyForDB) {
+//        final ProgressBar profileImageProgressBar = findViewById(R.id.profileImageProgressBar);
+//        profileImageProgressBar.setVisibility(View.VISIBLE);
+//        profileImageProgressBar.setEnabled(true);
+        newPostImage.setDrawingCacheEnabled(true);
+        newPostImage.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) newPostImage.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference postRef = allPostsRef.child(dateReadyForDB + "%" + newPost.getmPublisherStr() + ".jpg");
+
+        UploadTask uploadTask = postRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+//                profileImageProgressBar.setEnabled(false);
+//                profileImageProgressBar.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     private enum FADE {
@@ -612,11 +733,14 @@ public class HomeScreen extends AppCompatActivity
             publicData[ADDRESS_INDEX] = profileModel.getAddress();
             publicData[NAME_INDEX] = profileModel.getName();
 
+            LinkedList<String> mailList = new LinkedList<>();
+            for (ProfileModel pm : getFamilyMembers(mail, 0)) {
+                mailList.add(pm.getEmail());
+            }
             for (int index = 0; index < Profile.NUMBER_OF_PARAMETERS; index++) {
                 if (publicData[index] == null
                         || publicData[index].length() == 0
-                        || (publicData[index].startsWith("%f") && !StaticMethods.getFamilyMembers(mail, 0)
-                            .contains(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                        || (publicData[index].startsWith("%f") && !mailList.contains(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
                 ) {
                     publicData[index] = "";
                 }
@@ -647,8 +771,8 @@ public class HomeScreen extends AppCompatActivity
             TextView date = listItem.findViewById(R.id.post_dateTV);
             final TextView content = listItem.findViewById(R.id.post_contentTV);
             final TextView reedMore = listItem.findViewById(R.id.post_reedMoreTV);
-            ImageView profileImg = listItem.findViewById(R.id.post_profilePhotoIV);
-            ImageView additionalImg = listItem.findViewById(R.id.post_additionalPhotoIV);
+            final ImageView profileImg = listItem.findViewById(R.id.post_profilePhotoIV);
+            final ImageView additionalImg = listItem.findViewById(R.id.post_additionalPhotoIV);
 
             final ProfileModel profileModel = getPublicProfileModel(StaticMethods.getProfileModel(current.getmPublisherStr()), current.getmPublisherStr());
             name.setText(profileModel.getName());
@@ -681,20 +805,52 @@ public class HomeScreen extends AppCompatActivity
 //            Uri uri = FirebaseStorage
 //                    .getInstance()
 //                    .getReference()
-//                    .child(getString(R.string.post_photos))
+//                    .child(getString(R.string.post_images))
 //                    .child(current.getmImagePathStr())
 //                    .getDownloadUrl()
 //                    .getResult();
             //additionalImg.setImageURI(uri);
 
             //TODO take care of URI for profile
-            //IV.setImageURI(current.getIV());
-//            listItem.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //TODO Intents...... make Static,Public Boolean value for Toggle
-//                }
-//            });
+            StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
+                    .child(prepareStringToDataBase(profileModel.getEmail()) + ".jpg");
+
+            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    int resizeTO = 180;
+                    Picasso.get()
+                            .load(uri)
+                            .error(getDrawable(R.drawable.logo))
+                            .into(profileImg);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    profileImg.setImageDrawable(getDrawable(R.drawable.logo_with_white));
+                }
+            });
+
+            DateReadyForDB dateReadyForDB = new DateReadyForDB(current.getmPublishDate());
+            ref = allPostsRef.child(dateReadyForDB + "%" + current.getmPublisherStr() + ".jpg");
+
+            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    int resizeTO = 180;
+                    Picasso.get()
+                            .load(uri)
+                            .error(getDrawable(R.drawable.logo))
+                            .into(additionalImg);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                }
+            });
+
+            //TODO Intents...... make Static,Public Boolean value for Toggle
+
             listItem.setClickable(false);
             return listItem;
         }

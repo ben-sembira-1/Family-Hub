@@ -33,7 +33,7 @@
         android:layout_marginStart="8dp"
         android:onClick="homeClicked"
         android:text="Back To Home Screen"
-        android:background="@drawable/discription_bg"
+        android:background="@drawable/description_bg"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

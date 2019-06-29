@@ -142,11 +142,12 @@ public class SignUp extends AppCompatActivity {
                                         myRef = myRef.child(FBuser.getUid()).child("personalData");
                                         myRef.child("email").setValue(FBuser.getEmail());
 
-                                        database.getReference().child("allUsers")
-                                                .push().setValue(mAuth.getCurrentUser().getEmail());
+                                        myRef = database.getReference().child("allUsers")
+                                                .child(StaticMethods.prepareStringToDataBase(FBuser.getEmail()));
+                                        myRef.setValue(FBuser.getEmail());
 
                                         Intent intent = new Intent(SignUp.this, Profile.class);
-                                        intent.putExtra("USER_MAIL", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                        intent.putExtra("USER_MAIL", FBuser.getEmail());
                                         startActivity(intent);
                                     } else {
                                         Toast.makeText(SignUp.this, "email has been used or is not valid", Toast.LENGTH_LONG).show();

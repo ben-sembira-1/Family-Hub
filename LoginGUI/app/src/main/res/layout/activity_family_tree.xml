@@ -10,10 +10,12 @@
         android:id="@+id/parentsTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="Parents"
         android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/guideline1" />
 
@@ -21,9 +23,11 @@
         android:id="@+id/leftParentIV"
         android:layout_width="@dimen/treePicDimens"
         android:layout_height="@dimen/treePicDimens"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/parentsTV"
+        android:onClick="goTo1stParent"
         app:layout_constraintTop_toBottomOf="@+id/parentsTV"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@mipmap/no_profile_pic_round" />
 
     <ImageView
@@ -34,18 +38,20 @@
         app:layout_constraintBottom_toBottomOf="@+id/leftParentIV"
         app:layout_constraintStart_toEndOf="@+id/leftParentIV"
         app:layout_constraintTop_toTopOf="@+id/leftParentIV"
+        android:onClick="goTo2ndParent"
         app:srcCompat="@mipmap/no_profile_pic_round" />
 
-    <ImageView
+    <com.example.sembi.logingui.MLRoundedImageView
         android:id="@+id/partnerIV"
-        android:layout_width="@dimen/treePicDimens"
-        android:layout_height="@dimen/treePicDimens"
-        android:layout_marginTop="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/partnerFrameIV"
         app:layout_constraintEnd_toEndOf="@+id/partnerFrameIV"
         app:layout_constraintStart_toStartOf="@+id/partnerFrameIV"
-        app:layout_constraintTop_toBottomOf="@+id/myPartnersTV"
+        app:layout_constraintTop_toTopOf="@+id/partnerFrameIV"
         app:srcCompat="@mipmap/no_profile_pic_round" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -53,75 +59,77 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.0" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="0.25" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.45" />
 
     <TextView
         android:id="@+id/meTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="Me"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+        android:onClick="goToCurrUser"
+        app:layout_constraintBottom_toTopOf="@+id/textureView"
+        app:layout_constraintEnd_toEndOf="@+id/textureView"
+        app:layout_constraintStart_toStartOf="@id/textureView" />
 
     <ImageView
         android:id="@+id/meIV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="@+id/meTV"
-        app:layout_constraintTop_toBottomOf="@+id/meTV"
-        app:srcCompat="@mipmap/no_profile_pic_round" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:src="@drawable/logo_with_white"
+        app:layout_constraintBottom_toBottomOf="@+id/textureView"
+        app:layout_constraintEnd_toEndOf="@+id/textureView"
+        app:layout_constraintStart_toStartOf="@+id/textureView"
+        app:layout_constraintTop_toTopOf="@+id/textureView" />
 
     <TextView
         android:id="@+id/myPartnersTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="86dp"
         android:text="My Partner"
         android:textSize="18sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/meTV"
-        app:layout_constraintStart_toEndOf="@+id/meTV" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/leftParentNameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:text="name"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="@+id/leftParentIV"
         app:layout_constraintStart_toStartOf="@+id/leftParentIV"
+        android:onClick="goTo1stParent"
         app:layout_constraintTop_toBottomOf="@+id/leftParentIV" />
 
     <TextView
         android:id="@+id/rightParentNameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:text="name"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="@+id/rightParentIV"
         app:layout_constraintStart_toStartOf="@+id/rightParentIV"
+        android:onClick="goTo2ndParent"
         app:layout_constraintTop_toBottomOf="@+id/rightParentIV" />
 
 
@@ -129,48 +137,47 @@
         android:id="@+id/partnerNameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="name"
         app:layout_constraintEnd_toEndOf="@+id/partnerIV"
         app:layout_constraintStart_toStartOf="@+id/partnerIV"
-        app:layout_constraintTop_toBottomOf="@+id/partnerIV" />
+        android:onClick="goToPartner"
+        app:layout_constraintTop_toBottomOf="@+id/partnerFrameIV" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.45" />
 
     <ListView
         android:id="@+id/brothersListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:layout_constraintTop_toBottomOf="@id/myBrothersTV"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/backToHomeBtn"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/myBrothersTV" />
 
     <ListView
         android:id="@+id/kidsListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="96dp"
-        app:layout_constraintTop_toBottomOf="@id/myKidsTV"
+        android:layout_margin="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/backToHomeBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/myKidsTV" />
 
     <TextView
         android:id="@+id/myKidsTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
         android:text="My Kids"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/kidsListView"
@@ -182,7 +189,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
         android:text="My Brothers"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/brothersListView"
@@ -193,45 +199,33 @@
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:thumb="@drawable/example_appwidget_preview"
-        app:layout_constraintBottom_toTopOf="@+id/guideline1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/backToHomeBtn"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Home"
-        android:background="@drawable/add_member_bg"
-        android:onClick="goHome"
-        app:layout_constraintBottom_toTopOf="@+id/guideline1"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:thumb="@drawable/radio_off_image"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/guideline1" />
+
 
     <View
         android:id="@+id/textureView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="32dp"
         android:background="@drawable/black_border_fam_tree"
-        app:layout_constraintBottom_toBottomOf="@id/guideline3"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/guideline"
+        android:onClick="goToCurrUser"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <ImageView
         android:id="@+id/partnerFrameIV"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
@@ -239,7 +233,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@id/myPartnersTV"
+        android:onClick="goToPartner"
         app:srcCompat="@drawable/love_frame" />
+
+    <Button
+        android:id="@+id/backToHomeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/colorAccent"
+        android:onClick="goHome"
+        android:text="Back To Home Screen"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

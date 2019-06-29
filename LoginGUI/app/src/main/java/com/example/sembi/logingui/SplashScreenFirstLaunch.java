@@ -3,16 +3,16 @@ package com.example.sembi.logingui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashScreenFirstLaunch extends AppCompatActivity {
 
     final int SPLASH_SCREEN_TIME_LENGTH = 5000;
-    FrameLayout mainContainer;
-    TextView headerTV;
+    LinearLayout mainContainer;
+    ImageView headerTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

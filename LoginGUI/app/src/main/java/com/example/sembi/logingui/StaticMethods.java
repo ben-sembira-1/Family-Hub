@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 
@@ -17,6 +19,7 @@ public class StaticMethods {
     public final static String[] MONTHS = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
     public final static int PHONE_INDEX = 0, EMAIL_INDEX = 1, BDAY_INDEX = 2, CITY_INDEX = 3, ADDRESS_INDEX = 4, NAME_INDEX = 5;
     public final static int ADD_KID_INDEX = 0, ADD_PARENT_INDEX = 1, ADD_PARTNER_INDEX = 2;
+    public static LinkedList<ValueEventListenerAndRef> valueEventListenerAndRefLinkedList = new LinkedList<>();
 
     public enum famFields{
         parents,
@@ -31,6 +34,11 @@ public class StaticMethods {
 
     public static void setPublicUsers(DataSnapshot publicUsers) {
         StaticMethods.publicUsers = publicUsers;
+    }
+
+    public static StorageReference getProfileImageRef(String mail) {
+        return FirebaseStorage.getInstance().getReference().child("profileImages")
+                .child(prepareStringToDataBase(mail) + ".jpg");
     }
 
     public static ProfileModel getProfileModel(String mail){
@@ -54,40 +62,49 @@ public class StaticMethods {
                 });
     }
 
-    public static LinkedList<String> getFamilyMembers(String usrEmail, int circle) {
-        LinkedList<String> list = new LinkedList<>();
-        list.add(usrEmail);
-        list.addAll(getFamilyMembers(circle, list));
+    //TODO change circles by settings
+    public static LinkedList<ProfileModel> getFamilyMembers(String usrEmail, int circlesDeep) {
+        LinkedList<ProfileModel> allFamMembersWithRepeats = new LinkedList<>();
 
-        LinkedList<String> listToReturn = new LinkedList<>();
+        allFamMembersWithRepeats.add(publicUsers.child(prepareStringToDataBase(usrEmail))
+                .child("personalData").getValue(ProfileModel.class));
 
-        for (String s : list){
-            if (!listToReturn.contains(s)){
-                listToReturn.add(s);
+        getFamilyMembers(circlesDeep, allFamMembersWithRepeats);
+
+        LinkedList<ProfileModel> listToReturn = new LinkedList<>();
+        LinkedList<String> listOfMails = new LinkedList<>();
+        for (ProfileModel pm : allFamMembersWithRepeats) {
+            if (!listOfMails.contains(pm.getEmail())) {
+                listOfMails.add(pm.getEmail());
+                if (pm.getEmail().startsWith("%f"))
+                    pm.setEmail(pm.getEmail().substring(2));
+
+                listToReturn.add(pm);
             }
         }
 
-        listToReturn.sort(new Comparator<String>() {
+        listToReturn.sort(new Comparator<ProfileModel>() {
             @Override
-            public int compare(String o1, String o2) {
-                return o1.compareTo(o2);
+            public int compare(ProfileModel o1, ProfileModel o2) {
+                return o1.getName().compareTo(o2.getName());
             }
         });
 
         return listToReturn;
     }
 
-    public static LinkedList<String> getFamilyMembers(int circle, final LinkedList<String> previous) {
-        if (circle <= 0)
+    private static LinkedList<ProfileModel> getFamilyMembers(int circle, final LinkedList<ProfileModel> previous) {
+        if (circle <= 0) {
             return previous;
+        }
 
-        LinkedList<String> aux = new LinkedList<>();
+        LinkedList<ProfileModel> aux = new LinkedList<>();
 
-        for (String s : previous) {
-            aux.addAll(get(s, famFields.kids));
-            aux.addAll(get(s, famFields.partner));
-            aux.addAll(get(s, famFields.parents));
-            aux.addAll(get(s, famFields.brothers));
+        for (ProfileModel s : previous) {
+            aux.addAll(get(s.getEmail(), famFields.kids));
+            aux.addAll(get(s.getEmail(), famFields.partner));
+            aux.addAll(get(s.getEmail(), famFields.parents));
+            aux.addAll(get(s.getEmail(), famFields.brothers));
         }
 
         previous.addAll(aux);
@@ -97,22 +114,40 @@ public class StaticMethods {
         return previous;
     }
 
-    public static LinkedList<String> get(String user_email, famFields field){
+    public static LinkedList<String> fromProfileModelColectionToStringEmailsLinkedList(Collection<ProfileModel> collection) {
         LinkedList<String> toReturn = new LinkedList<>();
+        for (ProfileModel pm : collection) {
+            toReturn.add(pm.getEmail());
+        }
+        return toReturn;
+    }
+
+    public static LinkedList<ProfileModel> get(String user_email, famFields field) {
+        LinkedList<ProfileModel> toReturn = new LinkedList<>();
         DataSnapshot famDataSnapshot = publicUsers.child(prepareStringToDataBase(prepareStringToDataBase(user_email))).child("fam");
 
         if (field == famFields.kids){
             for (DataSnapshot snapshot : famDataSnapshot.child("kids").getChildren()) {
-                toReturn.add(snapshot.getValue().toString());
+
+                ProfileModel curr = publicUsers.child(prepareStringToDataBase(snapshot.getValue().toString()))
+                        .child("personalData").getValue(ProfileModel.class);
+
+                toReturn.add(curr);
             }
         }else if (field == famFields.parents){
             for (DataSnapshot snapshot : famDataSnapshot.child("parents").getChildren()) {
-                toReturn.add(snapshot.getValue().toString());
+                ProfileModel curr = publicUsers.child(prepareStringToDataBase(snapshot.getValue().toString()))
+                        .child("personalData").getValue(ProfileModel.class);
+
+                toReturn.add(curr);
             }
         }else if (field == famFields.partner){
             if (famDataSnapshot.child("partner").getValue() == null)
                 return toReturn;
-            toReturn.add(famDataSnapshot.child("partner").getValue().toString());
+            ProfileModel curr = publicUsers.child(prepareStringToDataBase(famDataSnapshot.child("partner").getValue().toString()))
+                    .child("personalData").getValue(ProfileModel.class);
+
+            toReturn.add(curr);
 //            for (DataSnapshot snapshot : famDataSnapshot.child("partner").getChildren()) {
 //                toReturn.add(snapshot.getValue().toString());
 //            }

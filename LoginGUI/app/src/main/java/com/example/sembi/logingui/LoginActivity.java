@@ -179,6 +179,10 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Login attempt in progress, please wait..", Toast.LENGTH_LONG);
             return;
         }
+        if (pass.getText().toString().equals("") || user.getText().toString().equals("")) {
+            Toast.makeText(this, "Fill in all fields.", Toast.LENGTH_LONG).show();
+            return;
+        }
         loginInProgress = true;
         pass.setTextColor(getColor(R.color.grey));
         user.setTextColor(getColor(R.color.grey));
@@ -197,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Signing In..", Toast.LENGTH_SHORT).show();
                             login();
                         } else {
-                            Toast.makeText(LoginActivity.this, "Authntication Failed!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(LoginActivity.this, new OnFailureListener() {

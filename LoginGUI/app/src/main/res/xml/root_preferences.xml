@@ -48,4 +48,12 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Account">
+
+        <Preference
+            app:key="delete_account"
+            app:title="Delete My Account" />
+
+    </PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>
