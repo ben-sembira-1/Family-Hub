@@ -133,8 +133,6 @@ public class UpcomingEvents extends AppCompatActivity {
 //                case (StaticMethods.thinking):
 //                    coming.setImageDrawable(getDrawable(R.drawable.thinking_50));
 //            }
-
-            //TODO addImage (not sure)
             StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
                     .child(prepareStringToDataBase(current.getHostEmail()) + ".jpg");
 
@@ -171,9 +169,6 @@ public class UpcomingEvents extends AppCompatActivity {
                 }
             });
         }
-
-
-        //TODO move to event
 //        private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
 //        String phoneNo;
 //        String message;

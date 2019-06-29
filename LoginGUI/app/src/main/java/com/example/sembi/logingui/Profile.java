@@ -109,6 +109,7 @@ public class Profile extends AppCompatActivity {
     private StorageReference mStorageRef;
     private Class nextClass;
     private LinkedList<String> alertsShownKeys;
+    private boolean bUploadingPhoto;
 
     private void setCurrentUserToMyUser() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -139,6 +140,7 @@ public class Profile extends AppCompatActivity {
         }
 
         replacedPhoto = false;
+        bUploadingPhoto = false;
         publicData = new String[NUMBER_OF_PARAMETERS];
         alertsShownKeys = new LinkedList<>();
         setSpinners();
@@ -788,6 +790,7 @@ public class Profile extends AppCompatActivity {
         if (!replacedPhoto)
             return;
         replacedPhoto = false;
+        bUploadingPhoto = true;
         final ProgressBar profileImageProgressBar = findViewById(R.id.profileImageProgressBar);
         profileImageProgressBar.setVisibility(View.VISIBLE);
         profileImageProgressBar.setEnabled(true);
@@ -805,6 +808,8 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
+                bUploadingPhoto = false;
+                goTo(nextClass);
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -812,7 +817,11 @@ public class Profile extends AppCompatActivity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 profileImageProgressBar.setEnabled(false);
                 profileImageProgressBar.setVisibility(View.GONE);
+                bUploadingPhoto = false;
+                goTo(nextClass);
             }
+
+
         });
 
     }
@@ -842,7 +851,6 @@ public class Profile extends AppCompatActivity {
     }
 
     private void refreshFirstTime() {
-        //TODO
         if (profileData.getName().equals("")) {
             EDIT_MODE = true;
             for (Button B : RequestButtonsArray) {
@@ -969,11 +977,6 @@ public class Profile extends AppCompatActivity {
 
     }
 
-    private boolean isFirstTime() {
-        //TODO get from dataBase.
-        return true;
-    }
-
     private void setEditTextDataArrray() {
         EditText[] ET_id_s = {findViewById(R.id.editNameV),
                 findViewById(R.id.editPhoneV),
@@ -1007,7 +1010,7 @@ public class Profile extends AppCompatActivity {
                 {
                         findViewById(R.id.addChildBtn),
                         findViewById(R.id.addParentBtn),
-                        findViewById(R.id.addPartnerBtn) //TODO add functionality
+                        findViewById(R.id.addPartnerBtn)
                 };
 
         for (int i = 0; i < B_id_s.length; i++) {
@@ -1054,7 +1057,6 @@ public class Profile extends AppCompatActivity {
     }
 
     private void createEmptyFieldsDialog() {
-        // TODO
         // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -1082,7 +1084,6 @@ public class Profile extends AppCompatActivity {
     }
 
     private boolean allFieldsCompleted() {
-        // TODO
         for (EditText ET : EditTextDataArray) {
             if (ET.getText().toString().equals(""))
                 return false;
@@ -1121,6 +1122,10 @@ public class Profile extends AppCompatActivity {
 //    }
 
     private void goTo(Class S) {
+        if (bUploadingPhoto) {
+            nextClass = S;
+            return;
+        }
         Intent intent = new Intent(this, S);
         startActivity(intent);
     }

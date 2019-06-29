@@ -26,9 +26,6 @@ public class SplashScreenFirstLaunch extends AppCompatActivity {
     }
 
     private void splashScreenToNextSplash() {
-
-        //TODO
-        //RunAnimation();
         //TODO - animation with colors
 
 

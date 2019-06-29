@@ -39,10 +39,10 @@
         android:text="@string/nav_header_full_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-    <TextView
-        android:id="@+id/nav_nextEvent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/nav_header_next_event"/>
+    <!--<TextView-->
+    <!--android:id="@+id/nav_nextEvent"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/nav_header_next_event"/>-->
 
 </LinearLayout>

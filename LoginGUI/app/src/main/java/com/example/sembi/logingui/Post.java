@@ -7,8 +7,6 @@ class Post {
     private String mContentStr;
     private Date mPublishDate;
     private String mLinkStr;
-    //    private URL mPhotoURL;
-//    TODO: the path will be: "postImages/" + mPublisherStr + "(" + mPublishDate + ")"
 
     public Post(String mPublisherStr, String mContentStr, Date mPublishDate, String mLinkStr) {
         this.mPublisherStr = mPublisherStr;

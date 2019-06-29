@@ -49,6 +49,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/post_dateTV" />
 
+    <View
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_additionalPhotoIV" />
+
     <ImageView
         android:id="@+id/post_additionalPhotoIV"
         android:layout_width="0dp"

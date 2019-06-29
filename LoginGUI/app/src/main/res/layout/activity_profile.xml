@@ -445,7 +445,6 @@
                 app:layout_constraintTop_toTopOf="@+id/NameTextV"
                 app:srcCompat="@drawable/ic_mode_edit_off_24dp" />
 
-            <!--TODO setVisibility and functionality-->
             <ImageView
                 android:id="@+id/replaceProfileImage_Button_"
                 android:layout_width="0dp"

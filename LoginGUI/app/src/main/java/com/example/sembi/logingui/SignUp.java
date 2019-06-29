@@ -129,7 +129,6 @@ public class SignUp extends AppCompatActivity {
 //                                        date.setDate(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
                                         Profile.EDIT_MODE = true;
 
-                                        //TODO user should be?
                                         ProfileModel profileModel = new ProfileModel("","", mAuth.getCurrentUser().getEmail(), "", "", "");
 
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();

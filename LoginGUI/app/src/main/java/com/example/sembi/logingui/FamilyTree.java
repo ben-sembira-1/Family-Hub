@@ -235,7 +235,7 @@ public class FamilyTree extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
-                    if (dataSnapshot.child("email").getValue().toString().equals(currentUser))
+                    if (prepareStringToDataBase(dataSnapshot.child("email").getValue().toString()).equals(prepareStringToDataBase(currentUser)))
                         return;
 
                     FamilyTreeNodeUIModel familyTreeNodeUIModel =
@@ -395,7 +395,7 @@ public class FamilyTree extends AppCompatActivity {
         ArrayList<FamilyTreeNodeUIModel> shrinked = new ArrayList<>();
         ArrayList<String> shrinked_Strings = new ArrayList<>();
         for (FamilyTreeNodeUIModel f : modelsList) {
-            if (!shrinked_Strings.contains(f.getName())) {
+            if (!shrinked_Strings.contains(f.getName()) && !f.getEmail().equals(currentUser)) {
                 shrinked.add(f);
                 shrinked_Strings.add(f.getName());
             }
@@ -403,20 +403,6 @@ public class FamilyTree extends AppCompatActivity {
         modelsList.clear();
         modelsList.addAll(shrinked);
     }
-
-//    private void collectAllRecords(DataSnapshot dataSnapshot) {
-//        for (DataSnapshot currDS : dataSnapshot.child(currentUser).child("fam").child("kids").getChildren()) {
-//            DataSnapshot currKid = dataSnapshot.child(prepareStringToDataBase(currDS.getValue(String.class)));
-//            String name = currKid.child(getString(R.string.personal_dataDB))
-//                    .child("name")
-//                    .getValue(String.class);
-//            //TODO
-//            //Uri uri = new Uri.Builder().build();
-//            Uri uri = null;
-//            brothersModelsList.add(new FamilyTreeNodeUIModel(name, uri));
-//            //TODO Collect correct records
-//        }
-//    }
 
     private DatabaseReference getAllUsersReference() {
         return reference.child(getString(R.string.all_usersDB));
@@ -593,7 +579,6 @@ public class FamilyTree extends AppCompatActivity {
             TextView name = listItem.findViewById(R.id.FamilyTreeNodeUI_TV);
             final ImageView IV = listItem.findViewById(R.id.FamilyTreeNodeUI_IV);
             name.setText(current.getName());
-            //TODO take care of URI
 
 
             StorageReference ref = current.getStorageIVRef();

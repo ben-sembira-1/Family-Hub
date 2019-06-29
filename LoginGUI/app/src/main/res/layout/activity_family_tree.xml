@@ -112,10 +112,9 @@
 
     <TextView
         android:id="@+id/leftParentNameTV"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="eventName"
         app:layout_constraintEnd_toEndOf="@+id/leftParentIV"
         app:layout_constraintStart_toStartOf="@+id/leftParentIV"
         android:onClick="goTo1stParent"
@@ -123,10 +122,9 @@
 
     <TextView
         android:id="@+id/rightParentNameTV"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="eventName"
         app:layout_constraintEnd_toEndOf="@+id/rightParentIV"
         app:layout_constraintStart_toStartOf="@+id/rightParentIV"
         android:onClick="goTo2ndParent"
@@ -137,7 +135,6 @@
         android:id="@+id/partnerNameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="eventName"
         app:layout_constraintEnd_toEndOf="@+id/partnerIV"
         app:layout_constraintStart_toStartOf="@+id/partnerIV"
         android:onClick="goToPartner"
@@ -250,6 +247,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Move in tree - Go to profile"
+        app:layout_constraintBottom_toTopOf="@+id/switch1"
+        app:layout_constraintEnd_toEndOf="@+id/switch1"
+        app:layout_constraintStart_toStartOf="@+id/switch1" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

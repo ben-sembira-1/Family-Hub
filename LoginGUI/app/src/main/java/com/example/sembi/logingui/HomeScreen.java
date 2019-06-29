@@ -143,7 +143,6 @@ public class HomeScreen extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         navFullName = headerView.findViewById(R.id.nav_fullName);
         navProfilePic = headerView.findViewById(R.id.nav_profileImageView);
-        //TODO
 
         StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
                 .child(prepareStringToDataBase(FirebaseAuth.getInstance().getCurrentUser().getEmail()) + ".jpg");
@@ -527,8 +526,6 @@ public class HomeScreen extends AppCompatActivity
             sendIntent.putExtra(Intent.EXTRA_TEXT, "download the family organizer app from the Google Play Store!!");
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
-        } else if (id == R.id.nav_send) {
-
         } else if (id == R.id.nav_log_out) {
             FirebaseAuth.getInstance().signOut();
             for (ValueEventListenerAndRef valueEventListenerAndRef : valueEventListenerAndRefLinkedList)
@@ -573,10 +570,6 @@ public class HomeScreen extends AppCompatActivity
         });
     }
 
-    private void setpic() {
-        //TODO
-    }
-
     private void setNextEvent() {
         //TODO
     }
@@ -603,12 +596,12 @@ public class HomeScreen extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        } else if (id == R.id.action_new) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            startActivity(new Intent(this, SettingsActivity.class));
+//            return true;
+//        } else if (id == R.id.action_new) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -620,6 +613,7 @@ public class HomeScreen extends AppCompatActivity
         fadeView(
                 findViewById(R.id.newPostContainer)
                 , FADE.in);
+
         //TODO: init all fields
     }
 
@@ -643,22 +637,24 @@ public class HomeScreen extends AppCompatActivity
 //    }
 
 
-    public void followLink(View view) {
-        if (!(view instanceof TextView))
-            return;
-        String link = ((TextView) view).getText().toString();
-        if (link == null || link.length() == 0)
-            return;
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(link));
-        startActivity(intent);
-    }
+//    public void followLink(View view) {
+//        if (!(view instanceof TextView))
+//            return;
+//        String link = ((TextView) view).getText().toString();
+//        if (link == null || link.length() == 0)
+//            return;
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setData(Uri.parse(link));
+//        startActivity(intent);
+//    }
 
     public void createNewPost(View view) {
         newPost = new Post(FirebaseAuth.getInstance().getCurrentUser().getEmail()
                 , ((EditText) findViewById(R.id.newPost_contentET)).getText().toString()
                 , new Date()
                 , null);
+
+        ((EditText) findViewById(R.id.newPost_contentET)).setText(null);
 
         PostReadyForDB postReadyForDB = new PostReadyForDB(newPost);
         DateReadyForDB dateReadyForDB = new DateReadyForDB(newPost.getmPublishDate());
@@ -708,7 +704,7 @@ public class HomeScreen extends AppCompatActivity
 //                profileImageProgressBar.setVisibility(View.GONE);
             }
         });
-
+        newPostImage.setImageDrawable(getDrawable(R.drawable.logo_with_white));
     }
 
     private enum FADE {
@@ -792,8 +788,15 @@ public class HomeScreen extends AppCompatActivity
             Calendar c = Calendar.getInstance();
             c.setTime(current.getmPublishDate());
 
+            String minute = "" + c.get(Calendar.MINUTE);
+            String hour = "" + ((c.get(Calendar.HOUR_OF_DAY) + 3) % 24);
+            if (c.get(Calendar.MINUTE) < 10)
+                minute = "0" + c.get(Calendar.MINUTE);
+            if (c.get(Calendar.HOUR_OF_DAY) < 3) {
+                c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 1);
+            }
             date.setText(DAYS[c.get(Calendar.DAY_OF_WEEK)] + ", " + MONTHS[c.get(Calendar.MONTH)]
-                    + " " + c.get(Calendar.DAY_OF_MONTH) + ", " + c.get(Calendar.YEAR) + ", " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
+                    + " " + c.get(Calendar.DAY_OF_MONTH) + ", " + c.get(Calendar.YEAR) + ", " + hour + ":" + minute);
 //            if (content.getLineCount() > 5)
 //                reedMore.setVisibility(View.VISIBLE);
 
@@ -823,7 +826,6 @@ public class HomeScreen extends AppCompatActivity
 //                    .getResult();
             //additionalImg.setImageURI(uri);
 
-            //TODO take care of URI for profile
             StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
                     .child(prepareStringToDataBase(profileModel.getEmail()) + ".jpg");
 
@@ -860,8 +862,6 @@ public class HomeScreen extends AppCompatActivity
                 public void onFailure(@NonNull Exception exception) {
                 }
             });
-
-            //TODO Intents...... make Static,Public Boolean value for Toggle
 
             listItem.setClickable(false);
             return listItem;

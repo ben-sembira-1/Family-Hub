@@ -128,17 +128,17 @@
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:hapticFeedbackEnabled="false"
         android:onClick="loginAttempt"
         android:text="Log in!"
-        app:layout_constraintBottom_toBottomOf="@+id/toggleButtonRemMe"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/toggleButtonRemMe"
-        app:layout_constraintTop_toTopOf="@+id/toggleButtonRemMe" />
+        app:layout_constraintBottom_toTopOf="@+id/newAcountButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passEditT" />
 
     <TextView
         android:id="@+id/newAcountButton"
@@ -157,20 +157,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <RadioButton
-        android:id="@+id/toggleButtonRemMe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:button="@drawable/remember_me_check_button"
-        android:text="Remember Me"
-        android:checked="false"
-        android:onClick="rememberMeClicked"
-        app:layout_constraintBottom_toTopOf="@+id/newAcountButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passEditT" />
+    <!--<RadioButton-->
+    <!--android:id="@+id/toggleButtonRemMe"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:layout_marginStart="8dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:button="@drawable/remember_me_check_button"-->
+    <!--android:text="Remember Me"-->
+    <!--android:checked="false"-->
+    <!--android:onClick="rememberMeClicked"-->
+    <!--app:layout_constraintBottom_toTopOf="@+id/newAcountButton"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/passEditT" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,8 +14,6 @@ public class NavHeader extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_header_home_screen);
 
-        //TODO make external function ->
-
 //        navFullName = findViewById(R.id.nav_fullName);
 //        //setNav();
     }

@@ -11,7 +11,6 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,11 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -41,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     Boolean show;
     private FirebaseAuth mAuth;
 
-    RadioButton b;
+//    RadioButton b;
 
     boolean remMe = false;
     String serial_user = "";
@@ -64,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         myRef = database.getReference();
         loginInProgress = false;
 
-        b = findViewById(R.id.toggleButtonRemMe);
-        b.setChecked(false);
+//        b = findViewById(R.id.toggleButtonRemMe);
+//        b.setChecked(false);
 
         mAuth = FirebaseAuth.getInstance();
         eye = findViewById(R.id.eyeImageV);
@@ -80,12 +76,12 @@ public class LoginActivity extends AppCompatActivity {
 //        autoSignIn();
     }
 
-    private void autoSignIn() {
-        if (serial_ASI != null && serial_user != null && uid != "" && serial_ASI != "" && serial_user != "") {
-            //TODO
-            login();
-        }
-    }
+//    private void autoSignIn() {
+//        if (serial_ASI != null && serial_user != null && uid != "" && serial_ASI != "" && serial_user != "") {
+//            //TODO
+//            login();
+//        }
+//    }
 
 //    private void cheatTheSystem(){
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -104,47 +100,47 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void setPhoneSerialUserListener() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("phoneSerialNumbers").child(uid).child("user");
+//    private void setPhoneSerialUserListener() {
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference().child("phoneSerialNumbers").child(uid).child("user");
+//
+//
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                serial_user = dataSnapshot.getValue(String.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                //TODO
+//            }
+//        });
+//    }
 
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                serial_user = dataSnapshot.getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                //TODO
-            }
-        });
-    }
-
-    private void setAutoSignInListener() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference().child("phoneSerialNumbers").child(uid).child("AutoSignIn");
-
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                serial_ASI = dataSnapshot.getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                //TODO
-            }
-        });
-    }
+//    private void setAutoSignInListener() {
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = database.getReference().child("phoneSerialNumbers").child(uid).child("AutoSignIn");
+//
+//
+//        myRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                serial_ASI = dataSnapshot.getValue(String.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError error) {
+//                // Failed to read value
+//                //TODO
+//            }
+//        });
+//    }
 
     public void showPass(View view) {
         String STRpassword = pass.getText().toString();
@@ -238,14 +234,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void rememberMeClicked(View view) {
-        remMe = b.isChecked();
-
-        int RM = -1;
-        if (remMe)
-            RM = 1;
-
-        myRef.child("phoneSerialNumbers").child(uid).child("AutoSignIn").setValue(String.valueOf(RM));
-
-    }
+//    public void rememberMeClicked(View view) {
+//        remMe = b.isChecked();
+//
+//        int RM = -1;
+//        if (remMe)
+//            RM = 1;
+//
+//        myRef.child("phoneSerialNumbers").child(uid).child("AutoSignIn").setValue(String.valueOf(RM));
+//
+//    }
 }

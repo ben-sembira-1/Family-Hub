@@ -63,7 +63,6 @@ public class FamilyMembers extends AppCompatActivity {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //TODO set circlesDeep to settings preference
                 allMyFam.clear();
                 allMyFam.addAll(getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail(), 2));
 
@@ -110,6 +109,8 @@ public class FamilyMembers extends AppCompatActivity {
             if (pm.getName().toLowerCase().contains(searchEditT.getText().toString().toLowerCase()))
                 records.add(pm);
         }
+        TextView header = findViewById(R.id.members_header);
+        header.setText("Family Members (" + (records.size() - 1) + ")");
         adapter.notifyDataSetChanged();
     }
 
@@ -158,8 +159,6 @@ public class FamilyMembers extends AppCompatActivity {
 
             DOB.setText(date + " (" + years + " years old)");
 
-
-            //TODO getImageFromStorage(String) in StaticMethods
             StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
                     .child(prepareStringToDataBase(curr.getEmail()) + ".jpg");
 

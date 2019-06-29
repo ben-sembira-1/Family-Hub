@@ -5,8 +5,6 @@ class PostReadyForDB {
     private String mContentStr;
     private String mLinkStr;
     private String mImagePathStr;
-    //    private URL mPhotoURL;
-//    TODO: the path will be: "postImages/" + mPublisherStr + "(" + mPublishDate + ")"
 
     public PostReadyForDB(String mPublisherStr, String mContentStr, String mLinkStr, String mImagePathStr) {
         this.mPublisherStr = mPublisherStr;
