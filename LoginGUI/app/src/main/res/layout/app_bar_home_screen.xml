@@ -75,7 +75,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/newPostContainer"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="500dp"
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:background="#E698B4B3"
@@ -101,29 +101,40 @@
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="64dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="64dp"
             android:ems="10"
             android:gravity="center_horizontal|center_vertical"
             android:hint="Whats on your mind?"
             android:inputType="textMultiLine"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/numberPicker2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newPost_headerTV" />
 
-        <ImageView
-            android:id="@+id/newPost_insertLinkIV"
+        <NumberPicker
+            android:id="@+id/numberPicker2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:onClick="insertLink"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newPost_contentET"
-            app:srcCompat="@drawable/ic_insert_link_black_24dp" />
+            app:layout_constraintBottom_toTopOf="@+id/newPost_postBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/newPost_imgPreviewIV"></NumberPicker>
+
+        <!--<ImageView-->
+        <!--android:id="@+id/newPost_insertLinkIV"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="32dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:onClick="insertLink"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/newPost_contentET"-->
+        <!--app:srcCompat="@drawable/ic_insert_link_black_24dp" />-->
 
         <ImageView
             android:id="@+id/newPost_insertImageIV"
@@ -134,7 +145,7 @@
             android:layout_marginBottom="8dp"
             android:onClick="insertImage"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/newPost_insertLinkIV"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newPost_contentET"
             app:srcCompat="@drawable/ic_insert_photo_black_24dp" />
 
@@ -166,22 +177,22 @@
             app:layout_constraintTop_toBottomOf="@+id/newPost_headerTV"
             app:srcCompat="@drawable/common_google_signin_btn_icon_light_normal" />
 
-        <TextView
-            android:id="@+id/newPost_linkPreviewTV"
-            style="@style/FirebaseUI.Text.Link"
-            android:layout_width="250dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:autoLink="web"
-            android:gravity="end|center_vertical"
-            android:text="no link added"
-            android:textSize="14sp"
-            android:onClick="followLink"
-            app:layout_constraintBottom_toTopOf="@+id/newPost_contentET"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newPost_headerTV" />
+        <!--<TextView-->
+        <!--android:id="@+id/newPost_linkPreviewTV"-->
+        <!--style="@style/FirebaseUI.Text.Link"-->
+        <!--android:layout_width="250dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:autoLink="web"-->
+        <!--android:gravity="end|center_vertical"-->
+        <!--android:text="no link added"-->
+        <!--android:textSize="14sp"-->
+        <!--android:onClick="followLink"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/newPost_contentET"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/newPost_headerTV" />-->
 
         <EditText
             android:id="@+id/newPost_linkPasteET"
@@ -214,6 +225,17 @@
             app:layout_constraintBottom_toBottomOf="@+id/newPost_linkPasteET"
             app:layout_constraintEnd_toEndOf="@+id/newPost_linkPasteET"
             app:layout_constraintTop_toTopOf="@+id/newPost_linkPasteET" />
+
+        <TextView
+            android:id="@+id/numberPicker2TextView"
+            style="@style/FirebaseUI.Text.Heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Circles"
+            app:layout_constraintBottom_toTopOf="@+id/numberPicker2"
+            app:layout_constraintEnd_toEndOf="@id/numberPicker2"
+            app:layout_constraintStart_toStartOf="@id/numberPicker2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

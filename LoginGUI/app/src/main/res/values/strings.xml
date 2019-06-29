@@ -11,7 +11,7 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">Email address is invalid</string>
-    <!-- <string name="error_invalid_password">Your password is too short</string> -->
+    <!-- <string eventName="error_invalid_password">Your password is too short</string> -->
     <string name="error_incorrect_password">Your password is incorrect</string>
     <string name="error_field_required">All fields are required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."
@@ -63,6 +63,7 @@
 
     <!--TAGS-->
     <string name="profile_extra_mail_tag" translatable="false">USER_MAIL</string>
+    <string name="event_extra_tag" translatable="false">EVENT_KEY</string>
 
 
     <!-- -
@@ -102,6 +103,7 @@
     <string name="famDB" translatable="false">fam</string>
     <string name="userFeedDB" translatable="false">feed</string>
     <string name="userFeedDateDB" translatable="false">date</string>
+    <string name="userEventsDB" translatable="false">events</string>
 
 
     //Storage titles

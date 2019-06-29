@@ -21,10 +21,10 @@ public class NavHeader extends AppCompatActivity {
     }
 
 //    private void setNav() {
-//        setName();
+//        setEventName();
 //    }
 //
-//    private void setName() {
+//    private void setEventName() {
 //        FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        DatabaseReference myRef = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("personalData").child("name");
 //

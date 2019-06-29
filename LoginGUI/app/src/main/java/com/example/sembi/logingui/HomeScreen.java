@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -78,6 +79,7 @@ public class HomeScreen extends AppCompatActivity
     private TextView navFullName, navNextEvent;
     private ImageView navProfilePic;
     private Post newPost;
+    private int circles;
     StorageReference allPostsRef;
 
     //feedView
@@ -100,7 +102,7 @@ public class HomeScreen extends AppCompatActivity
         newPostImage = findViewById(R.id.newPost_imgPreviewIV);
         newPostImage.setImageDrawable(getDrawable(R.drawable.logo_with_white));
         allPostsRef = FirebaseStorage.getInstance().getReference().child(getString(R.string.post_images));
-
+        circles = 0;
         currentId = -1;
 
         setPublicUsersListener();
@@ -115,6 +117,16 @@ public class HomeScreen extends AppCompatActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        NumberPicker numberPicker = findViewById(R.id.numberPicker2);
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(10);
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                circles = newVal;
+            }
+        });
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -498,7 +510,7 @@ public class HomeScreen extends AppCompatActivity
             startActivity(new Intent(this, FamilyMembers.class));
         } else if (id == R.id.nav_events && id != currentId) {
 
-            startActivity(new Intent(this, MedicalRecords.class));
+            startActivity(new Intent(this, UpcomingEvents.class));
 //            inflate(R.layout.activity_event);
 //            currentId = id;
         } else if (id == R.id.nav_new_event && id != currentId) {
@@ -620,15 +632,15 @@ public class HomeScreen extends AppCompatActivity
 
     }
 
-    public void addLink(View view) {
-        ((TextView) findViewById(R.id.newPost_linkPreviewTV))
-                .setText(
-                        ((EditText) findViewById(R.id.newPost_linkPasteET))
-                                .getText().toString()
-                );
-
-        fadeOutLinkBox();
-    }
+//    public void addLink(View view) {
+//        ((TextView) findViewById(R.id.newPost_linkPreviewTV))
+//                .setText(
+//                        ((EditText) findViewById(R.id.newPost_linkPasteET))
+//                                .getText().toString()
+//                );
+//
+//        fadeOutLinkBox();
+//    }
 
 
     public void followLink(View view) {
@@ -646,7 +658,7 @@ public class HomeScreen extends AppCompatActivity
         newPost = new Post(FirebaseAuth.getInstance().getCurrentUser().getEmail()
                 , ((EditText) findViewById(R.id.newPost_contentET)).getText().toString()
                 , new Date()
-                , ((TextView) findViewById(R.id.newPost_linkPreviewTV)).getText().toString());
+                , null);
 
         PostReadyForDB postReadyForDB = new PostReadyForDB(newPost);
         DateReadyForDB dateReadyForDB = new DateReadyForDB(newPost.getmPublishDate());
@@ -657,7 +669,7 @@ public class HomeScreen extends AppCompatActivity
         c.setTime(newPost.getmPublishDate());
 
 
-        for (ProfileModel pm : getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail(), 1)) {
+        for (ProfileModel pm : getFamilyMembers(FirebaseAuth.getInstance().getCurrentUser().getEmail(), circles)) {
             DatabaseReference auxRef = databasePublicUsersReference.child(prepareStringToDataBase(pm.getEmail())).child(getString(R.string.userFeedDB))
                     .child(dateReadyForDB.getYear() + "," + dateReadyForDB.getMonth() + "," + dateReadyForDB.getWeek()).child(dateReadyForDB.toString());
             auxRef.setValue(postReadyForDB);
@@ -734,7 +746,7 @@ public class HomeScreen extends AppCompatActivity
             publicData[NAME_INDEX] = profileModel.getName();
 
             LinkedList<String> mailList = new LinkedList<>();
-            for (ProfileModel pm : getFamilyMembers(mail, 0)) {
+            for (ProfileModel pm : getFamilyMembers(mail, 2)) {
                 mailList.add(pm.getEmail());
             }
             for (int index = 0; index < Profile.NUMBER_OF_PARAMETERS; index++) {
@@ -770,7 +782,7 @@ public class HomeScreen extends AppCompatActivity
             TextView name = listItem.findViewById(R.id.post_profileNameTV);
             TextView date = listItem.findViewById(R.id.post_dateTV);
             final TextView content = listItem.findViewById(R.id.post_contentTV);
-            final TextView reedMore = listItem.findViewById(R.id.post_reedMoreTV);
+//            final TextView reedMore = listItem.findViewById(R.id.post_reedMoreTV);
             final ImageView profileImg = listItem.findViewById(R.id.post_profilePhotoIV);
             final ImageView additionalImg = listItem.findViewById(R.id.post_additionalPhotoIV);
 
@@ -782,15 +794,15 @@ public class HomeScreen extends AppCompatActivity
 
             date.setText(DAYS[c.get(Calendar.DAY_OF_WEEK)] + ", " + MONTHS[c.get(Calendar.MONTH)]
                     + " " + c.get(Calendar.DAY_OF_MONTH) + ", " + c.get(Calendar.YEAR) + ", " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
-            if (content.getLineCount() > 5)
-                reedMore.setVisibility(View.VISIBLE);
+//            if (content.getLineCount() > 5)
+//                reedMore.setVisibility(View.VISIBLE);
 
-            reedMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    content.setMaxLines(100);
-                }
-            });
+//            reedMore.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    content.setMaxLines(100);
+//                }
+//            });
 
             name.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -17,11 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UpcomingEvents"></activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".SplashScreenSecondLaunch" />
         <activity android:name=".SplashScreenFirstLaunch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,10 +30,6 @@
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait" /> <!-- Include the AdActivity configChanges and theme. -->
-        <activity
-            android:name="com.google.android.gms.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:theme="@android:style/Theme.Translucent" />
         <activity android:name=".SignUp" />
         <activity android:name=".newAcount" />
         <activity
@@ -44,7 +38,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".FamilyMembers" />
         <activity android:name=".Profile" />
-        <activity android:name=".MedicalRecords" />
+        <activity android:name=".UpcomingEvents" />
         <activity android:name=".Event" />
         <activity android:name=".FamilyTree" />
     </application>

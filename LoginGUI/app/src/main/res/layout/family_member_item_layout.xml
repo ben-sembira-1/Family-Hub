@@ -13,11 +13,11 @@
         android:text="Full Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/userImageFamilyMember"
+        app:layout_constraintStart_toEndOf="@+id/eventItem_additionalImage"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.example.sembi.logingui.MLRoundedImageView
-        android:id="@+id/userImageFamilyMember"
+        android:id="@+id/eventItem_additionalImage"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginStart="16dp"
@@ -30,18 +30,18 @@
         android:layout_width="16dp"
         android:layout_height="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/userImageFamilyMember" />
+        app:layout_constraintTop_toBottomOf="@id/eventItem_additionalImage" />
 
     <TextView
-        android:id="@+id/userDateOfBirthFamilyMember"
+        android:id="@+id/eventItem_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="dd/mm/yy"
-        app:layout_constraintBottom_toBottomOf="@+id/userImageFamilyMember"
+        app:layout_constraintBottom_toBottomOf="@+id/eventItem_additionalImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/userImageFamilyMember"
+        app:layout_constraintStart_toEndOf="@+id/eventItem_additionalImage"
         app:layout_constraintTop_toBottomOf="@+id/headerFamilyMember" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

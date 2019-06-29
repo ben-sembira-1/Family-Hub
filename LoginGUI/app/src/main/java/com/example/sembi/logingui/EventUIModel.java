@@ -1,42 +1,44 @@
 package com.example.sembi.logingui;
 
 public class EventUIModel {
-    private String name,
-            host, date, location,
-            description, coming;
+    private String eventName,
+            hostEmail, date, location,
+            description, coming, key;
 
-    public EventUIModel(String name, String host, String date, String location, String description, String coming) {
-        this.name = name;
-        this.host = host;
+    public EventUIModel(String eventName, String hostEmail, String date, String location, String description, String coming, String key) {
+        this.eventName = eventName;
+        this.hostEmail = hostEmail;
         this.date = date;
         this.location = location;
         this.description = description;
-        this.coming = coming;
+        setComing(coming);
+        this.key = key;
     }
 
     public EventUIModel() {
-        this.name = "";
-        this.host = "";
+        this.eventName = "";
+        this.hostEmail = "";
         this.date = "";
         this.location = "";
         this.description = "";
-        this.coming = "";
+        setComing("");
+        this.key = "";
     }
 
-    public String getName() {
-        return name;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
-    public String getHost() {
-        return host;
+    public String getHostEmail() {
+        return hostEmail;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setHostEmail(String hostEmail) {
+        this.hostEmail = hostEmail;
     }
 
     public String getDate() {
@@ -68,6 +70,17 @@ public class EventUIModel {
     }
 
     public void setComing(String coming) {
-        this.coming = coming;
+        if (coming.equals(StaticMethods.coming) || coming.equals(StaticMethods.notComing) || coming.equals(StaticMethods.thinking))
+            this.coming = coming;
+        else
+            this.coming = StaticMethods.thinking;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

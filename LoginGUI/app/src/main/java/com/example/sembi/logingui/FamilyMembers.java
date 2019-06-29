@@ -139,8 +139,8 @@ public class FamilyMembers extends AppCompatActivity {
 //        title.setText(current.getTitle());
 //        content.setText(current.getContent());
             TextView name = listItem.findViewById(R.id.headerFamilyMember);
-            TextView DOB = listItem.findViewById(R.id.userDateOfBirthFamilyMember);
-            final ImageView userImage = listItem.findViewById(R.id.userImageFamilyMember);
+            TextView DOB = listItem.findViewById(R.id.eventItem_date);
+            final ImageView userImage = listItem.findViewById(R.id.eventItem_additionalImage);
 
             name.setText(curr.getName());
             String date = curr.getDate();
