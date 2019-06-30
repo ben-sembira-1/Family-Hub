@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sembi.logingui">
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -17,6 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help"
+            android:theme="@style/FullscreenTheme"></activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />

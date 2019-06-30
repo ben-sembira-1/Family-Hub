@@ -110,7 +110,7 @@ public class FamilyMembers extends AppCompatActivity {
                 records.add(pm);
         }
         TextView header = findViewById(R.id.members_header);
-        header.setText("Family Members (" + (records.size() - 1) + ")");
+        header.setText("Family Members (" + (records.size()) + ")");
         adapter.notifyDataSetChanged();
     }
 
@@ -147,17 +147,20 @@ public class FamilyMembers extends AppCompatActivity {
             String date = curr.getDate();
             if (curr.getDate().startsWith("%f"))
                 date = (curr.getDate().substring(2));
-
-            int years = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(date.substring(date.length() - 4));
-            if (Integer.parseInt(date.substring(3, 5)) > Calendar.getInstance().get(Calendar.MONTH)) {
-                years--;
-            } else if (Integer.parseInt(date.substring(3, 5)) == Calendar.getInstance().get(Calendar.MONTH)) {
-                if (Integer.parseInt(date.substring(0, 2)) > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+            if (date.length() < 4)
+                DOB.setText("");
+            else {
+                int years = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(date.substring(date.length() - 4));
+                if (Integer.parseInt(date.substring(3, 5)) > Calendar.getInstance().get(Calendar.MONTH)) {
                     years--;
+                } else if (Integer.parseInt(date.substring(3, 5)) == Calendar.getInstance().get(Calendar.MONTH)) {
+                    if (Integer.parseInt(date.substring(0, 2)) > Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+                        years--;
+                    }
                 }
-            }
 
-            DOB.setText(date + " (" + years + " years old)");
+                DOB.setText(date + " (" + years + " years old)");
+            }
 
             StorageReference ref = FirebaseStorage.getInstance().getReference().child(getString(R.string.profile_images))
                     .child(prepareStringToDataBase(curr.getEmail()) + ".jpg");

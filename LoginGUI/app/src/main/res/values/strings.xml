@@ -135,5 +135,11 @@
 
     <!--Account Preferences-->
     <string name="deleteAccount" translatable="false">Delete My Account</string>
+    <string name="title_activity_help" translatable="false">Help</string>
+    <string name="title_home" translatable="false">Home</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
+    <string name="title_notifications" translatable="false">Notifications</string>
+    <string name="dummy_button" translatable="false">Dummy Button</string>
+    <string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
 
 </resources>

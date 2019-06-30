@@ -76,15 +76,14 @@ public class HomeScreen extends AppCompatActivity
     private static final long SMALL_ANIMATIONS_DURATION = 300;
 
     private static int currentId;
-    private TextView navFullName, navNextEvent;
+    private TextView navFullName;
     private ImageView navProfilePic;
     private Post newPost;
     private int circles;
-    StorageReference allPostsRef;
+    private StorageReference allPostsRef;
 
     //feedView
     private LinkedList<DatabaseReference> weeksToShowRefs;
-    private LinkedList<String> weeksToShowStrings;
     private LinkedList<String> allWeeks;
 
 
@@ -93,12 +92,14 @@ public class HomeScreen extends AppCompatActivity
     private ArrayList<Post> records;
     private HomeScreenFeedPostUIListAdapter adapter;
     private ImageView newPostImage;
+    private boolean isWritingNewPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
+        isWritingNewPost = false;
         newPostImage = findViewById(R.id.newPost_imgPreviewIV);
         newPostImage.setImageDrawable(getDrawable(R.drawable.logo_with_white));
         allPostsRef = FirebaseStorage.getInstance().getReference().child(getString(R.string.post_images));
@@ -107,7 +108,6 @@ public class HomeScreen extends AppCompatActivity
 
         setPublicUsersListener();
 
-        weeksToShowStrings = new LinkedList<>();
         weeksToShowRefs = new LinkedList<>();
         allWeeks = new LinkedList<>();
 
@@ -365,17 +365,17 @@ public class HomeScreen extends AppCompatActivity
         return weekArr;
     }
 
-    public void insertLink(View view) {
-        fadeView(
-                findViewById(R.id.newPost_linkPasteET)
-                , FADE.in
-        );
-
-        fadeView(
-                findViewById(R.id.newPost_addLinkBtn)
-                , FADE.in
-        );
-    }
+//    public void insertLink(View view) {
+//        fadeView(
+//                findViewById(R.id.newPost_linkPasteET)
+//                , FADE.in
+//        );
+//
+//        fadeView(
+//                findViewById(R.id.newPost_addLinkBtn)
+//                , FADE.in
+//        );
+//    }
 
     @Override
     public void onBackPressed() {
@@ -389,6 +389,7 @@ public class HomeScreen extends AppCompatActivity
         } else if (findViewById(R.id.greyScreen).getAlpha() != 0) {
 
             fadeOutNewPostBox();
+            isWritingNewPost = false;
 
         } else {
             super.onBackPressed();
@@ -520,12 +521,15 @@ public class HomeScreen extends AppCompatActivity
                     , FirebaseAuth.getInstance().getCurrentUser().getEmail()));
 //            inflate(R.layout.activity_family_tree);
 //            currentId = id;
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_send) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "download the family organizer app from the Google Play Store!!");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "I got a bit stuck in the SUPER-COOL Family-Hub app, can you help me??");
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
+        } else if (id == R.id.nav_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_log_out) {
             FirebaseAuth.getInstance().signOut();
             for (ValueEventListenerAndRef valueEventListenerAndRef : valueEventListenerAndRefLinkedList)
@@ -607,6 +611,7 @@ public class HomeScreen extends AppCompatActivity
     }
 
     public void newPost(View view) {
+        isWritingNewPost = true;
         findViewById(R.id.greyScreen).animate().alpha(0.3f).setDuration(SMALL_ANIMATIONS_DURATION);
         findViewById(R.id.newPostContainer).setAlpha(0.0f);
         findViewById(R.id.newPostContainer).setVisibility(View.VISIBLE);
@@ -672,12 +677,12 @@ public class HomeScreen extends AppCompatActivity
             auxRef.child("date").setValue(dateReadyForDB);
         }
 
-        savePhotoInDataBase(dateReadyForDB);
+        savePhotoInStorage(dateReadyForDB);
 
         fadeOutNewPostBox();
     }
 
-    private void savePhotoInDataBase(DateReadyForDB dateReadyForDB) {
+    private void savePhotoInStorage(DateReadyForDB dateReadyForDB) {
 //        final ProgressBar profileImageProgressBar = findViewById(R.id.profileImageProgressBar);
 //        profileImageProgressBar.setVisibility(View.VISIBLE);
 //        profileImageProgressBar.setEnabled(true);
@@ -810,6 +815,8 @@ public class HomeScreen extends AppCompatActivity
             name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (isWritingNewPost)
+                        return;
                     Intent intent = new Intent(HomeScreen.this, Profile.class);
                     intent.putExtra(getString(R.string.profile_extra_mail_tag), profileModel.getEmail());
                     startActivity(intent);

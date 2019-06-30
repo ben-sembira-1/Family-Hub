@@ -69,8 +69,8 @@ public class Profile extends AppCompatActivity {
     final static int NUMBER_OF_PARAMETERS = 6;
 
 
-    TextView[] TextDataArray;
-    EditText[] EditTextDataArray;
+    private TextView[] TextDataArray;
+    private EditText[] EditTextDataArray;
 
     //Flag - enable/disable editing
     static Boolean EDIT_MODE = false;
@@ -81,27 +81,27 @@ public class Profile extends AppCompatActivity {
     //Flag - if true, will set EDIT_MODE to false
     private static boolean secondTime = true;
 
-    LinkedList<String> requestSentTo;
-    LinkedList<String> kids;
-    LinkedList<String> parents;
-    String partner;
+    private LinkedList<String> requestSentTo;
+    private LinkedList<String> kids;
+    private LinkedList<String> parents;
+    private String partner;
     //Set what user to show
     private String currentUser;
 
-    String[] publicData;
-    Button[] RequestButtonsArray;
+    private String[] publicData;
+    private Button[] RequestButtonsArray;
 
     //for uploading image
     private static int RESULT_LOAD_IMAGE = 1;
-    ImageView profileImage;
+    private ImageView profileImage;
 
-    ImageView goToHomeBtn;
-    ImageView editIcon;
-    Spinner phoneSpinner, bdaySpinner, citySpinner, addressSpinner;
-    FirebaseAuth mAuth;
-    LinkedList<String> allUsers;
-    LinkedList<DataSnapshot> allRequests;
-    LinkedList<DataSnapshot> allPermissions;
+    private ImageView goToHomeBtn;
+    private ImageView editIcon;
+    private Spinner phoneSpinner, bdaySpinner, citySpinner, addressSpinner;
+    private FirebaseAuth mAuth;
+    private LinkedList<String> allUsers;
+    private LinkedList<DataSnapshot> allRequests;
+    private LinkedList<DataSnapshot> allPermissions;
     private boolean shownUsrIsCurrentUsr;
     private boolean replacedPhoto;
     private ProfileModel profileData;
@@ -1243,7 +1243,7 @@ public class Profile extends AppCompatActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Fill in your fathers Email:");
+        builder.setTitle("Fill in your parents email:");
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -1300,6 +1300,15 @@ public class Profile extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             return false;
         }
+        LinkedList<ProfileModel> brothersModels = get(currentUser, famFields.brothers);
+        for (ProfileModel pm : brothersModels) {
+            if (pm.getEmail().equals(mAuth.getCurrentUser().getEmail())) {
+                Toast.makeText(Profile.this,
+                        "User is already your sibling.",
+                        Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
 
         return true;
     }
@@ -1331,7 +1340,7 @@ public class Profile extends AppCompatActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Fill in your kids Email:");
+        builder.setTitle("Fill in your kids email:");
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -1384,7 +1393,7 @@ public class Profile extends AppCompatActivity {
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Fill in your partners Email:");
+        builder.setTitle("Fill in your partners email:");
 
         // Set up the input
         final EditText input = new EditText(this);
