@@ -69,9 +69,6 @@ public class FamilyTree extends AppCompatActivity {
         kidsEmailsList = new LinkedList<>();
         partnerEmail = null;
 
-//        god = new FamilyTreeNode(getString(R.string.god_name));
-        //familyTreeString = null;
-
 
         aSwitch = findViewById(R.id.switch1);
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

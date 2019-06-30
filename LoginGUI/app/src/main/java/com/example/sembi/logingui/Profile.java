@@ -1038,8 +1038,10 @@ public class Profile extends AppCompatActivity {
     }
 
     private void viBtnMoveOn(Class s) {
-        if (!shownUsrIsCurrentUsr)
-            goTo(s);
+        if (!shownUsrIsCurrentUsr) {
+            onBackPressed();
+//            goTo(s);
+        }
 
         setDefaultName();
         if (EDIT_MODE)
@@ -1047,7 +1049,8 @@ public class Profile extends AppCompatActivity {
         else
             refresh(false);
         if (dataIsLegal()) {
-            goTo(s);
+            onBackPressed();
+//            goTo(s);
         }
     }
 

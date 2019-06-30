@@ -9,7 +9,7 @@
     android:animateLayoutChanges="true"
     android:background="#fff"
     android:id="@+id/splashLayout"
-    tools:context="SplashScreenFirstLaunch">
+    tools:context=".SplashScreen">
 
     <LinearLayout
         android:id="@+id/firstSplashMainGifContainer"

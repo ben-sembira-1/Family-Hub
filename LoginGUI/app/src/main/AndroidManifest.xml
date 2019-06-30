@@ -22,10 +22,7 @@
             android:name=".HelpActivity"
             android:label="@string/title_activity_help"
             android:theme="@style/FullscreenTheme"></activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
-        <activity android:name=".SplashScreenFirstLaunch">
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class SplashScreenFirstLaunch extends AppCompatActivity {
+public class SplashScreen extends AppCompatActivity {
 
     final int SPLASH_SCREEN_TIME_LENGTH = 5000;
     LinearLayout mainContainer;
@@ -48,8 +48,8 @@ public class SplashScreenFirstLaunch extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashScreenFirstLaunch.this, LoginActivity.class);
-                SplashScreenFirstLaunch.this.startActivity(intent);
+                Intent intent = new Intent(SplashScreen.this, LoginActivity.class);
+                SplashScreen.this.startActivity(intent);
             }
 
 
