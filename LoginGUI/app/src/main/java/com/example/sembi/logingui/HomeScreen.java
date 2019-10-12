@@ -269,7 +269,7 @@ public class HomeScreen extends AppCompatActivity
         allWeeks.sort(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                int[] iArr1 = getWeekArr(o1), iArr2 = getWeekArr(o2);
+                int[] iArr1 = getWeekArr(o2), iArr2 = getWeekArr(o1);
                 if (iArr1[0] != iArr2[0])
                     return iArr2[0] - iArr1[0];
 
